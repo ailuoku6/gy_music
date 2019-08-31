@@ -11,7 +11,7 @@ public class User {
     private String userName;
     @DatabaseField(columnName = "password")
     private String password;
-    @DatabaseField(columnName = "role")
+    @DatabaseField(columnName = "role") //0为普通用户，1为管理员用户
     private String role;
     @DatabaseField(columnName = "avatar")
     private String avatar;

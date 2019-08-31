@@ -32,7 +32,7 @@ import { setSongList } from '../../redux/actions'
 // });
 
 
-class Account extends Component {
+class MyMusic extends Component {
     constructor() {
         super();
         this.state = {
@@ -51,7 +51,7 @@ class Account extends Component {
 
         return (
             <View style={styles.container}>
-                <Text>Account</Text>
+                <Text>MyMusic</Text>
             </View>
         );
     }
@@ -73,5 +73,5 @@ const mapStateToProps = ({playList}) => ({
     playList
 });
 
-export default connect(mapStateToProps)(Account);
+export default connect(mapStateToProps)(MyMusic);
 

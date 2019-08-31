@@ -20,6 +20,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
 import Login from './pages/Login'
 import Main from './pages/Main'
+import SearchPage from './pages/SearchPage'
 
 //import TestFlatListSelect from "../components/Test";
 
@@ -57,10 +58,13 @@ class Home extends Component {
     };
 
     render() {
+        // alert(JSON.stringify(this.props))
         return (
             <View style={styles.container}>
                 {/*<Login/>*/}
-                <Main/>
+                <Main
+                    navigation={this.props.navigation}
+                />
             </View>
         );
     }
@@ -79,6 +83,7 @@ const styles = StyleSheet.create({
 const AppNavigator = createStackNavigator(
     {
         Home: Home,
+        SearchPage:SearchPage
     },
     {
         initialRouteName: "Home"

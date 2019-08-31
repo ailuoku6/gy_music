@@ -4,11 +4,15 @@ import { BottomNavigation, Text ,FAB} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
-const MusicRoute = () => <Text>Music</Text>;
+import Account from './Component/Account'
+import DiscoveryMusic from './Component/DiscoveryMusic'
+import MyMusic from './Component/MyMusic'
 
-const AlbumsRoute = () => <Text>Albums</Text>;
+const DiscoveryMusicRoute = () => <DiscoveryMusic/>;
 
-const RecentsRoute = () => <Text>Recents</Text>;
+const MyMusicRoute = () => <MyMusic/>;
+
+const AccountRoute = () => <Account/>;
 
 class Main extends React.Component {
     state = {
@@ -23,12 +27,13 @@ class Main extends React.Component {
     _handleIndexChange = index => this.setState({ index });
 
     _renderScene = BottomNavigation.SceneMap({
-        discovery_music: MusicRoute,
-        my_music: AlbumsRoute,
-        account: RecentsRoute,
+        discovery_music: DiscoveryMusicRoute,
+        my_music: MyMusicRoute,
+        account: AccountRoute,
     });
 
     render() {
+        // alert(JSON.stringify(this.props))
         return (
             <View style={{width:'100%',height:'100%'}}>
                 <View style={styles.fab}>
