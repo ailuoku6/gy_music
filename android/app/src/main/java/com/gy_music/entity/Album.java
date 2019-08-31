@@ -3,25 +3,25 @@ package com.gy_music.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "album")
-public class album {
-    @DatabaseField(columnName = "album_id")
+@DatabaseTable(tableName = "Album")
+public class Album {
+    @DatabaseField(columnName = "albumId",id = true)
     private String albumId;
-    @DatabaseField(columnName = "owner_id",foreign = true,foreignColumnName = "singer_id") //专辑拥有者 （歌手）
-    private String ownerId;
-    @DatabaseField(columnName = "album_name")
+    @DatabaseField(columnName = "ownerId",canBeNull = true,foreign = true,foreignColumnName = "singerId") //专辑拥有者 （歌手）
+    private Singer singer;
+    @DatabaseField(columnName = "albumName")
     private String albumName;
-    @DatabaseField(columnName = "album_cover")
+    @DatabaseField(columnName = "albumCover")
     private String albumCover;
-    @DatabaseField(columnName = "album_intro")
+    @DatabaseField(columnName = "albumIntro")
     private String albumIntro;
 
     public String getAlbumId() {
         return albumId;
     }
 
-    public String getOwnerId() {
-        return ownerId;
+    public Singer getSinger() {
+        return singer;
     }
 
     public String getAlbumName() {
@@ -40,8 +40,8 @@ public class album {
         this.albumId = albumId;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setSinger(Singer singer) {
+        this.singer = singer;
     }
 
     public void setAlbumName(String albumName) {
@@ -56,12 +56,12 @@ public class album {
         this.albumIntro = albumIntro;
     }
 
-    public album() {
+    public Album() {
     }
 
-    public album(String albumId, String ownerId, String albumName, String albumCover, String albumIntro) {
+    public Album(String albumId, Singer singer, String albumName, String albumCover, String albumIntro) {
         this.albumId = albumId;
-        this.ownerId = ownerId;
+        this.singer = singer;
         this.albumName = albumName;
         this.albumCover = albumCover;
         this.albumIntro = albumIntro;

@@ -3,17 +3,17 @@ package com.gy_music.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "song")
-public class song {
-    @DatabaseField(columnName = "song_id")
+@DatabaseTable(tableName = "Song")
+public class Song {
+    @DatabaseField(columnName = "songId",id = true)
     private String songId;
-    @DatabaseField(columnName = "own_album_id",foreign = true,foreignColumnName = "album_id")
-    private String ownAlbumId;
-    @DatabaseField(columnName = "song_name")
+    @DatabaseField(columnName = "ownAlbumId",foreign = true,foreignColumnName = "albumId")
+    private Album album;
+    @DatabaseField(columnName = "songName")
     private String songName;
     @DatabaseField(columnName = "link")
     private String link;
-    @DatabaseField(columnName = "song_cover")
+    @DatabaseField(columnName = "songCover")
     private String songCover;
     @DatabaseField(columnName = "price")
     private int price;
@@ -22,8 +22,8 @@ public class song {
         return songId;
     }
 
-    public String getOwnAlbumId() {
-        return ownAlbumId;
+    public Album getAlbum() {
+        return album;
     }
 
     public String getSongName() {
@@ -46,8 +46,8 @@ public class song {
         this.songId = songId;
     }
 
-    public void setOwnAlbumId(String ownAlbumId) {
-        this.ownAlbumId = ownAlbumId;
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 
     public void setSongName(String songName) {
@@ -66,12 +66,12 @@ public class song {
         this.price = price;
     }
 
-    public song() {
+    public Song() {
     }
 
-    public song(String songId, String ownAlbumId, String songName, String link, String songCover, int price) {
+    public Song(String songId, Album album, String songName, String link, String songCover, int price) {
         this.songId = songId;
-        this.ownAlbumId = ownAlbumId;
+        this.album = album;
         this.songName = songName;
         this.link = link;
         this.songCover = songCover;

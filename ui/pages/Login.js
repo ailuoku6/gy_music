@@ -18,6 +18,10 @@ import {
 } from 'react-native';
 import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
 
+import { connect } from 'react-redux';
+import { setSongList } from '../redux/actions'
+
+
 //import TestFlatListSelect from "../components/Test";
 
 // const instructions = Platform.select({
@@ -28,7 +32,7 @@ import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
 // });
 
 
-export default class Login extends Component {
+class Login extends Component {
     constructor() {
         super();
         this.state = {
@@ -41,6 +45,32 @@ export default class Login extends Component {
     //     // title: 'Home',
     //     header:null,
     // };
+
+    // changeStore(){
+    //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
+    // }
+
+    Signin(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        if (!this.state.userName||!this.state.passWord) {
+            ToastAndroid.show("请将表单填写完整",ToastAndroid.SHORT);
+            return;
+        }
+        DataBaseModule.Signin(this.state.userName,this.state.passWord).then((result)=>{
+            ToastAndroid.show(result,ToastAndroid.SHORT);
+        });
+    }
+
+    Signup(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        if (!this.state.userName||!this.state.passWord) {
+            ToastAndroid.show("请将表单填写完整",ToastAndroid.SHORT);
+            return;
+        }
+        DataBaseModule.Signup(this.state.userName,this.state.passWord,this.state.checked).then((result)=>{
+            ToastAndroid.show(result,ToastAndroid.SHORT);
+        });
+    }
 
     render() {
 
@@ -71,12 +101,13 @@ export default class Login extends Component {
                     </View>
                     <View style={{flexDirection:'row',alignItems: 'center',justifyContent: 'space-around'}}>
                         <Button mode="contained" style={{width:'40%'}} onPress={() => {
-
+                            this.Signup()
                         }}>
                             注册
                         </Button>
                         <Button mode="contained" style={{width:'40%'}} onPress={() => {
-
+                            // this.changeStore()
+                            this.Signin()
                         }}>
                             登陆
                         </Button>
@@ -99,6 +130,14 @@ const styles = StyleSheet.create({
         backgroundColor:'#518eff'
     }
 });
+
+const mapStateToProps = ({playList}) => ({
+    list: playList.list,
+    index:playList.index,
+    playList
+});
+
+export default connect(mapStateToProps)(Login);
 
 // const AppNavigator = createStackNavigator(
 //     {

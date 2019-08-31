@@ -2,18 +2,19 @@ package com.gy_music.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import com.gy_music.entity.Album;
+import com.gy_music.entity.Comment;
+import com.gy_music.entity.Ranking;
+import com.gy_music.entity.Ranking_item;
+import com.gy_music.entity.Singer;
+import com.gy_music.entity.Singer_song;
+import com.gy_music.entity.Song;
 import com.gy_music.entity.SongList;
-import com.gy_music.entity.UserList;
-import com.gy_music.entity.album;
-import com.gy_music.entity.artsCompany;
-import com.gy_music.entity.comment;
-import com.gy_music.entity.ranking;
-import com.gy_music.entity.ranking_item;
-import com.gy_music.entity.singer;
-import com.gy_music.entity.singer_song;
-import com.gy_music.entity.song;
-import com.gy_music.entity.song_list_song;
+import com.gy_music.entity.Song_list_song;
+import com.gy_music.entity.User;
+import com.gy_music.entity.ArtsCompany;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -23,20 +24,20 @@ import java.sql.SQLException;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final String DATA_BASE_NAME = "gy_music.db";
+    private static final String DATA_BASE_NAME = "gyMusic.db";
     private static final int DATA_BASE_VERSION = 1;
 
-    private Dao<album,String> albumStringDao;
-    private Dao<artsCompany,String> artsCompanyStringDao;
-    private Dao<comment,String> commentStringDao;
-    private Dao<ranking,String> rankingStringDao;
-    private Dao<ranking_item,String> rankingItemStringDao;
-    private Dao<singer,String> singerStringDao;
-    private Dao<singer_song,String> singerSongStringDao;
-    private Dao<song,String> songStringDao;
-    private Dao<song_list_song,String> songListSongStringDao;
+    private Dao<Album,String> albumStringDao;
+    private Dao<ArtsCompany,String> artsCompanyStringDao;
+    private Dao<Comment,String> commentStringDao;
+    private Dao<Ranking,String> rankingStringDao;
+    private Dao<Ranking_item,String> rankingItemStringDao;
+    private Dao<Singer,String> singerStringDao;
+    private Dao<Singer_song,String> singerSongStringDao;
+    private Dao<Song,String> songStringDao;
+    private Dao<Song_list_song,String> songListSongStringDao;
     private Dao<SongList,String> songListStringDao;
-    private Dao<UserList,String> userListStringDao;
+    private Dao<User,String> userListStringDao;
 
     private DatabaseHelper(Context context){
         super(context,DATA_BASE_NAME,null,DATA_BASE_VERSION);
@@ -45,17 +46,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource,album.class);
-            TableUtils.createTable(connectionSource,artsCompany.class);
-            TableUtils.createTable(connectionSource,comment.class);
-            TableUtils.createTable(connectionSource,ranking.class);
-            TableUtils.createTable(connectionSource,ranking_item.class);
-            TableUtils.createTable(connectionSource,singer.class);
-            TableUtils.createTable(connectionSource,singer_song.class);
-            TableUtils.createTable(connectionSource,song.class);
-            TableUtils.createTable(connectionSource,song_list_song.class);
+            TableUtils.createTable(connectionSource, User.class);
+            TableUtils.createTable(connectionSource, ArtsCompany.class);
+            TableUtils.createTable(connectionSource, Singer.class);
             TableUtils.createTable(connectionSource,SongList.class);
-            TableUtils.createTable(connectionSource,UserList.class);
+            TableUtils.createTable(connectionSource, Album.class);
+            TableUtils.createTable(connectionSource, Comment.class);
+            TableUtils.createTable(connectionSource, Ranking.class);
+            TableUtils.createTable(connectionSource, Ranking_item.class);
+            TableUtils.createTable(connectionSource, Singer_song.class);
+            TableUtils.createTable(connectionSource, Song.class);
+            TableUtils.createTable(connectionSource, Song_list_song.class);
+
+            Log.d("databaseonCreate", "onCreate: ");
+
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -64,17 +68,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
-            TableUtils.dropTable(connectionSource,album.class,true);
-            TableUtils.dropTable(connectionSource,artsCompany.class,true);
-            TableUtils.dropTable(connectionSource,comment.class,true);
-            TableUtils.dropTable(connectionSource,ranking.class,true);
-            TableUtils.dropTable(connectionSource,ranking_item.class,true);
-            TableUtils.dropTable(connectionSource,singer.class,true);
-            TableUtils.dropTable(connectionSource,singer_song.class,true);
-            TableUtils.dropTable(connectionSource,song.class,true);
-            TableUtils.dropTable(connectionSource,song_list_song.class,true);
+            TableUtils.dropTable(connectionSource, Album.class,true);
+            TableUtils.dropTable(connectionSource, ArtsCompany.class,true);
+            TableUtils.dropTable(connectionSource, Comment.class,true);
+            TableUtils.dropTable(connectionSource, Ranking.class,true);
+            TableUtils.dropTable(connectionSource, Ranking_item.class,true);
+            TableUtils.dropTable(connectionSource, Singer.class,true);
+            TableUtils.dropTable(connectionSource, Singer_song.class,true);
+            TableUtils.dropTable(connectionSource, Song.class,true);
+            TableUtils.dropTable(connectionSource, Song_list_song.class,true);
             TableUtils.dropTable(connectionSource,SongList.class,true);
-            TableUtils.dropTable(connectionSource,UserList.class,true);
+            TableUtils.dropTable(connectionSource, User.class,true);
 
             onCreate(database,connectionSource);
         }catch (SQLException e){
@@ -97,57 +101,57 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     //获得Dao
 
-    public Dao<album, String> getAlbumStringDao() throws SQLException{
+    public Dao<Album, String> getAlbumStringDao() throws SQLException{
         if (albumStringDao == null)
-            albumStringDao = getDao(album.class);
+            albumStringDao = getDao(Album.class);
         return albumStringDao;
     }
 
-    public Dao<artsCompany, String> getArtsCompanyStringDao() throws SQLException{
+    public Dao<ArtsCompany, String> getArtsCompanyStringDao() throws SQLException{
         if (artsCompanyStringDao == null)
-            artsCompanyStringDao = getDao(artsCompany.class);
+            artsCompanyStringDao = getDao(ArtsCompany.class);
         return artsCompanyStringDao;
     }
 
-    public Dao<comment, String> getCommentStringDao() throws SQLException{
+    public Dao<Comment, String> getCommentStringDao() throws SQLException{
         if (commentStringDao == null)
-            commentStringDao = getDao(comment.class);
+            commentStringDao = getDao(Comment.class);
         return commentStringDao;
     }
 
-    public Dao<ranking, String> getRankingStringDao() throws SQLException{
+    public Dao<Ranking, String> getRankingStringDao() throws SQLException{
         if (rankingStringDao == null)
-            rankingStringDao = getDao(ranking.class);
+            rankingStringDao = getDao(Ranking.class);
         return rankingStringDao;
     }
 
-    public Dao<ranking_item, String> getRankingItemStringDao() throws SQLException{
+    public Dao<Ranking_item, String> getRankingItemStringDao() throws SQLException{
         if (rankingItemStringDao == null)
-            rankingItemStringDao = getDao(ranking_item.class);
+            rankingItemStringDao = getDao(Ranking_item.class);
         return rankingItemStringDao;
     }
 
-    public Dao<singer, String> getSingerStringDao() throws SQLException{
+    public Dao<Singer, String> getSingerStringDao() throws SQLException{
         if (singerStringDao == null)
-            singerStringDao = getDao(singer.class);
+            singerStringDao = getDao(Singer.class);
         return singerStringDao;
     }
 
-    public Dao<singer_song, String> getSingerSongStringDao() throws SQLException{
+    public Dao<Singer_song, String> getSingerSongStringDao() throws SQLException{
         if (singerSongStringDao == null)
-            singerSongStringDao = getDao(singer_song.class);
+            singerSongStringDao = getDao(Singer_song.class);
         return singerSongStringDao;
     }
 
-    public Dao<song, String> getSongStringDao() throws SQLException{
+    public Dao<Song, String> getSongStringDao() throws SQLException{
         if (songStringDao == null)
-            songStringDao = getDao(song.class);
+            songStringDao = getDao(Song.class);
         return songStringDao;
     }
 
-    public Dao<song_list_song, String> getSongListSongStringDao() throws SQLException{
+    public Dao<Song_list_song, String> getSongListSongStringDao() throws SQLException{
         if (songListSongStringDao == null)
-            songListSongStringDao = getDao(song_list_song.class);
+            songListSongStringDao = getDao(Song_list_song.class);
         return songListSongStringDao;
     }
 
@@ -157,9 +161,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return songListStringDao;
     }
 
-    public Dao<UserList, String> getUserListStringDao() throws SQLException{
+    public Dao<User, String> getUserListStringDao() throws SQLException{
         if (userListStringDao == null)
-            userListStringDao = getDao(UserList.class);
+            userListStringDao = getDao(User.class);
         return userListStringDao;
     }
 

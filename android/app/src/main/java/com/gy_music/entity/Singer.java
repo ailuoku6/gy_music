@@ -3,27 +3,27 @@ package com.gy_music.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "singer")
-public class singer {
-    @DatabaseField(columnName = "singer_id",id = true)
+@DatabaseTable(tableName = "Singer")
+public class Singer {
+    @DatabaseField(columnName = "singerId",id = true)
     private String singerId;
-    @DatabaseField(columnName = "company_id",foreign = true,foreignColumnName = "arts_company_id")
-    private String companyId;
-    @DatabaseField(columnName = "singer_name")
+    @DatabaseField(columnName = "companyId",foreign = true,foreignColumnName = "artsCompanyId")
+    private ArtsCompany artsCompany;
+    @DatabaseField(columnName = "singerName")
     private String singerName;
-    @DatabaseField(columnName = "singer_sex")
+    @DatabaseField(columnName = "singerSex")
     private String singerSex;
-    @DatabaseField(columnName = "singer_avatar")
+    @DatabaseField(columnName = "singerAvatar")
     private String singerAvatar;
-    @DatabaseField(columnName = "singer_intro")
+    @DatabaseField(columnName = "singerIntro")
     private String singerIntro;
 
     public String getSingerId() {
         return singerId;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public ArtsCompany getArtsCompany() {
+        return artsCompany;
     }
 
     public String getSingerName() {
@@ -46,8 +46,8 @@ public class singer {
         this.singerId = singerId;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setArtsCompany(ArtsCompany artsCompany) {
+        this.artsCompany = artsCompany;
     }
 
     public void setSingerName(String singerName) {
@@ -66,12 +66,12 @@ public class singer {
         this.singerIntro = singerIntro;
     }
 
-    public singer() {
+    public Singer() {
     }
 
-    public singer(String singerId, String companyId, String singerName, String singerSex, String singerAvatar, String singerIntro) {
+    public Singer(String singerId, ArtsCompany artsCompany, String singerName, String singerSex, String singerAvatar, String singerIntro) {
         this.singerId = singerId;
-        this.companyId = companyId;
+        this.artsCompany = artsCompany;
         this.singerName = singerName;
         this.singerSex = singerSex;
         this.singerAvatar = singerAvatar;

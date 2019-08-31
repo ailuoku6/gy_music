@@ -4,14 +4,14 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "arts_company")
-public class artsCompany {
-    @DatabaseField(columnName = "arts_company_id")
+public class ArtsCompany {
+    @DatabaseField(columnName = "artsCompanyId",id = true)
     private String artsCompanyId;
-    @DatabaseField(columnName = "owner")
+    @DatabaseField(columnName = "owner") //公司法人
     private String owner;
-    @DatabaseField(columnName = "arts_company_intro")
+    @DatabaseField(columnName = "artsCompanyIntro")
     private String artsCompanyIntro;
-    @DatabaseField(columnName = "arts_company_name")
+    @DatabaseField(columnName = "artsCompanyName")
     private String artsCompanyName;
 
     public String getArtsCompanyId() {
@@ -46,10 +46,10 @@ public class artsCompany {
         this.artsCompanyName = artsCompanyName;
     }
 
-    public artsCompany() {
+    public ArtsCompany() {
     }
 
-    public artsCompany(String artsCompanyId, String owner, String artsCompanyIntro, String artsCompanyName) {
+    public ArtsCompany(String artsCompanyId, String owner, String artsCompanyIntro, String artsCompanyName) {
         this.artsCompanyId = artsCompanyId;
         this.owner = owner;
         this.artsCompanyIntro = artsCompanyIntro;

@@ -6,21 +6,21 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.sql.Date;
 
-@DatabaseTable(tableName = "comment")
-public class comment {
-    @DatabaseField(columnName = "userid",foreign = true,foreignColumnName = "user_id")
-    private String userid;
-    @DatabaseField(columnName = "target_id")
+@DatabaseTable(tableName = "Comment")
+public class Comment {
+    @DatabaseField(columnName = "userid",foreign = true,foreignColumnName = "userId")
+    private User user;
+    @DatabaseField(columnName = "targetId")
     private String targetId;
-    @DatabaseField(columnName = "target_type")
+    @DatabaseField(columnName = "targetType")
     private int targetType;//评论类型，1为歌曲，2为专辑，3为歌单
-    @DatabaseField(columnName = "comment_text",canBeNull = true)
+    @DatabaseField(columnName = "commentText",canBeNull = true)
     private String commentText;
-    @DatabaseField(columnName = "comment_date")
+    @DatabaseField(columnName = "commentDate")
     private Date commentDate;
 
-    public String getUserid() {
-        return userid;
+    public User getUser() {
+        return user;
     }
 
     public String getTargetId() {
@@ -39,8 +39,8 @@ public class comment {
         return commentDate;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setTargetId(String targetId) {
@@ -59,11 +59,11 @@ public class comment {
         this.commentDate = commentDate;
     }
 
-    public comment() {
+    public Comment() {
     }
 
-    public comment(String userid, String targetId, int targetType, String commentText, Date commentDate) {
-        this.userid = userid;
+    public Comment(User user, String targetId, int targetType, String commentText, Date commentDate) {
+        this.user = user;
         this.targetId = targetId;
         this.targetType = targetType;
         this.commentText = commentText;

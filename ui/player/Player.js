@@ -11,8 +11,14 @@ import {
     Platform,
     StyleSheet,
     Text,
-    View
+    View,
+    Alert
 } from 'react-native';
+
+import Video from 'react-native-video';
+
+import { connect } from 'react-redux';
+
 
 //import TestFlatListSelect from "../components/Test";
 
@@ -24,11 +30,11 @@ import {
 // });
 
 
-export default class Login extends Component {
+class Player extends Component {
     constructor() {
         super();
         this.state = {
-            musicUrl:''
+            musicUrl:'https://nav.ailuoku6.top/yasugs.mp3'
         };
     }
     // static navigationOptions = {
@@ -39,6 +45,9 @@ export default class Login extends Component {
     render() {
 
         let musicUrl = this.state.musicUrl;
+
+        // alert(JSON.stringify(this.props))
+
 
         return (
             musicUrl ? (
@@ -52,11 +61,11 @@ export default class Login extends Component {
                     muted={false}                           // Mutes the audio entirely.
                     // paused={!currentPlay.playing}                          // Pauses playback entirely.
                     resizeMode="cover"                      // Fill the whole screen at aspect ratio.*
-                    repeat={true}                           // Repeat forever.
+                    repeat={false}                           // Repeat forever.
                     playInBackground               // Audio continues to play when app entering background.
-                    playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
-                    progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
-                    ignoreSilentSwitch={"ignore"}           // [iOS] ignore | obey - When 'ignore', audio will still play with the iOS hard silent switch set to silent. When 'obey', audio will toggle with the switch. When not specified, will inherit audio settings as usual.
+                    // playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
+                    // progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
+                    // ignoreSilentSwitch={"ignore"}           // [iOS] ignore | obey - When 'ignore', audio will still play with the iOS hard silent switch set to silent. When 'obey', audio will toggle with the switch. When not specified, will inherit audio settings as usual.
                     // onLoadStart={this.loadStart}            // Callback when video starts to load
                     // onLoad={this.setDuration}               // Callback when video loads
                     // onProgress={this.setTime}               // Callback every ~250ms with currentTime
@@ -70,3 +79,13 @@ export default class Login extends Component {
         );
     }
 }
+
+const mapStateToProps = ({playList}) => ({
+    list: playList.list,
+    index:playList.index,
+    // playList
+});
+
+
+
+export default connect(mapStateToProps)(Player);

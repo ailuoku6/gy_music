@@ -4,10 +4,10 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "user_list")
-public class UserList {
-    @DatabaseField(columnName = "user_id",id = true)
+public class User {
+    @DatabaseField(columnName = "userId",id = true)
     private String userId;
-    @DatabaseField(columnName = "user_name")
+    @DatabaseField(columnName = "userName")
     private String userName;
     @DatabaseField(columnName = "password")
     private String password;
@@ -67,10 +67,10 @@ public class UserList {
         this.balance = balance;
     }
 
-    public UserList() {
+    public User() {
     }
 
-    public UserList(String userId, String userName, String password, String role, String avatar, int balance) {
+    public User(String userId, String userName, String password, String role, String avatar, int balance) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;

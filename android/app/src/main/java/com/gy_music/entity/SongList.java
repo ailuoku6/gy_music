@@ -5,23 +5,23 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "song_list")
 public class SongList {
-    @DatabaseField(columnName = "song_list_id",id = true)
+    @DatabaseField(columnName = "songListId",id = true)
     private String songListId;
-    @DatabaseField(columnName = "user_id",canBeNull = true,foreign = true,foreignColumnName = "user_id")
-    private String userId;
-    @DatabaseField(columnName = "song_list_title")
+    @DatabaseField(columnName = "userId",canBeNull = true,foreign = true,foreignColumnName = "userId")
+    private User user;
+    @DatabaseField(columnName = "songListTitle")
     private String songListTitle;
-    @DatabaseField(columnName = "song_list_intro")
+    @DatabaseField(columnName = "songListIntro")
     private String songListIntro;
-    @DatabaseField(columnName = "song_list_cover")
+    @DatabaseField(columnName = "songListCover")
     private String songListCover;
 
     public String getSongListId() {
         return songListId;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     public String getSongListTitle() {
@@ -40,8 +40,8 @@ public class SongList {
         this.songListId = songListId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setSongListTitle(String songListTitle) {
@@ -59,9 +59,9 @@ public class SongList {
     public SongList() {
     }
 
-    public SongList(String songListId, String userId, String songListTitle, String songListIntro, String songListCover) {
+    public SongList(String songListId, User user, String songListTitle, String songListIntro, String songListCover) {
         this.songListId = songListId;
-        this.userId = userId;
+        this.user = user;
         this.songListTitle = songListTitle;
         this.songListIntro = songListIntro;
         this.songListCover = songListCover;
