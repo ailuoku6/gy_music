@@ -23,7 +23,17 @@ const playList = (state = {},action)=>{
     }
 };
 
+const UserInfo = (state = {userInfo:null},action)=>{
+    switch (action.type) {
+        case TYPE.SET_USERINFO:
+            return {...state,userInfo:action.userInfo};
+        default:
+            return {...state}
+    }
+};
+
 export default combineReducers({
     currentPlay,
-    playList
+    playList,
+    UserInfo
 })

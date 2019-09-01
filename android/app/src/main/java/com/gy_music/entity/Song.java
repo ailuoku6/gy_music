@@ -11,6 +11,8 @@ public class Song {
     private Album album;
     @DatabaseField(columnName = "songName")
     private String songName;
+    @DatabaseField(columnName = "singerName",foreign = true,foreignColumnName = "singerName")
+    private Singer singer;
     @DatabaseField(columnName = "link")
     private String link;
     @DatabaseField(columnName = "songCover")
@@ -28,6 +30,10 @@ public class Song {
 
     public String getSongName() {
         return songName;
+    }
+
+    public Singer getSinger() {
+        return singer;
     }
 
     public String getLink() {
@@ -54,6 +60,10 @@ public class Song {
         this.songName = songName;
     }
 
+    public void setSinger(Singer singer) {
+        this.singer = singer;
+    }
+
     public void setLink(String link) {
         this.link = link;
     }
@@ -69,10 +79,11 @@ public class Song {
     public Song() {
     }
 
-    public Song(String songId, Album album, String songName, String link, String songCover, int price) {
+    public Song(String songId, Album album, String songName, Singer singer, String link, String songCover, int price) {
         this.songId = songId;
         this.album = album;
         this.songName = songName;
+        this.singer = singer;
         this.link = link;
         this.songCover = songCover;
         this.price = price;

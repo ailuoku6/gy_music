@@ -19,7 +19,7 @@ import {
 import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
 
 import { connect } from 'react-redux';
-import { setSongList } from '../redux/actions'
+import { setSongList,setuserInfo } from '../redux/actions'
 
 
 //import TestFlatListSelect from "../components/Test";
@@ -58,6 +58,8 @@ class Login extends Component {
         }
         DataBaseModule.Signin(this.state.userName,this.state.passWord).then((result)=>{
             ToastAndroid.show(result,ToastAndroid.SHORT);
+            this.props.dispatch(setuserInfo(JSON.parse(result)))
+
         });
     }
 
@@ -69,15 +71,20 @@ class Login extends Component {
         }
         DataBaseModule.Signup(this.state.userName,this.state.passWord,this.state.checked).then((result)=>{
             ToastAndroid.show(result,ToastAndroid.SHORT);
+            this.props.dispatch(setuserInfo(JSON.parse(result)))
+
         });
     }
 
     render() {
 
+        // alert(JSON.stringify(this.props))
+
         const checked = this.state.checked;
 
         return (
             <View style={styles.container}>
+                {/*<Text>{JSON.stringify(this.props)}</Text>*/}
                 <Surface style={{width: '80%',padding:20,borderRadius:20,elevation: 8}}>
                     <TextInput
                         label='用户名'
@@ -131,10 +138,12 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = ({playList}) => ({
+const mapStateToProps = ({playList,UserInfo}) => ({
     list: playList.list,
     index:playList.index,
-    playList
+    // playList,
+    userInfo:UserInfo.userInfo,
+    // UserInfo,
 });
 
 export default connect(mapStateToProps)(Login);

@@ -15,6 +15,7 @@ import com.gy_music.entity.Song;
 import com.gy_music.entity.SongList;
 import com.gy_music.entity.User;
 import com.gy_music.utils.Md5util;
+import com.gy_music.utils.RandomImg;
 import com.gy_music.utils.UUID_g;
 import com.gy_music.utils.config;
 
@@ -58,7 +59,7 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             SharedPreferences.Editor editor = sp.edit();
             editor.putString("userInfo", JSON.toJSONString(user));
             editor.apply();
-            mp.resolve("succ");
+            mp.resolve(JSON.toJSONString(user));
         }else{
             mp.resolve("fail");
         }
@@ -80,9 +81,12 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             mp.resolve("existed");
         }else {
             User newuser = null;
+            SongList songList = null;
             try {
-                newuser = new User(UUID_g.randomUUID(),userName,Md5util.md5(passWord),signupAsroot?"0":"1", config.defaultAvatar,0);
+                newuser = new User(UUID_g.randomUUID(),userName,Md5util.md5(passWord),signupAsroot?"1":"0", config.defaultAvatar,0);
+                songList = new SongList(UUID_g.randomUUID(),user,"我喜欢的音乐",user.getUserName()+"喜欢的音乐", RandomImg.getRandomImg());
                 databaseHelper.getUserListStringDao().create(newuser);
+                databaseHelper.getSongListStringDao().create(songList);
             }catch (SQLException e){
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
@@ -93,7 +97,7 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("userInfo",JSON.toJSONString(newuser));
                 editor.apply();
-                mp.resolve("succ");
+                mp.resolve(JSON.toJSONString(newuser));
             }else {
                 mp.resolve("fail");
             }
@@ -148,10 +152,65 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         List<Song> songs = new ArrayList<>();
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(mContext);
         try {
-            songs = databaseHelper.getSongStringDao().queryBuilder().where().like("songName",keyword).query();
+            songs = databaseHelper.getSongStringDao().queryBuilder().where().like("songName",keyword).or().like("singerName",keyword).query();
         }catch (SQLException e){
             e.printStackTrace();
         }
         mp.resolve(JSON.toJSONString(songs));
     }
+
+    @ReactMethod
+    public void getMySongList(String userinfo,Promise promise){
+        Promise mp = promise;
+        User user = null;
+        user = JSON.parseObject(userinfo,User.class);
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<SongList> songLists = new ArrayList<>();
+        try {
+            songLists = helper.getSongListStringDao().queryBuilder().where().eq("userId",user.getUserId()).query();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        mp.resolve(JSON.toJSONString(songLists));
+    }
+
+    @ReactMethod
+    public void Recharge(String userInfo,Integer chargeNum,Promise promise){
+        Promise mp = promise;
+        User user = null;
+        user = JSON.parseObject(userInfo,User.class);
+        user.setBalance(user.getBalance()+chargeNum);
+        DatabaseHelper helper  = DatabaseHelper.getInstance(mContext);
+        try {
+            helper.getUserListStringDao().update(user);
+            mp.resolve(JSON.toJSONString(user));
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+    }
+
+    @ReactMethod
+    public void ChangePassword(String userInfo,String oldpassword,String newpassword,Promise promise){
+        Promise mp = promise;
+        User user = null;
+        user = JSON.parseObject(userInfo,User.class);
+        DatabaseHelper helper  =DatabaseHelper.getInstance(mContext);
+        try {
+            if (user.getPassword().equals(Md5util.md5(oldpassword))){
+                user.setPassword(Md5util.md5(newpassword));
+                helper.getUserListStringDao().update(user);
+                mp.resolve(JSON.toJSONString(user));
+            }else {
+                mp.resolve("fail");
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            mp.resolve("fail");
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+    }
+
 }

@@ -2,7 +2,8 @@ export const TYPE = {
     SET_PLAY_ID:'SET_PLAY_ID',
     SET_PLAY_SONG:'SET_PLAY_SONG',
     SET_SONG_LIST:'SET_SONG_LIST',
-    SET_CURRENT_INDEX:'SET_CURRENT_INDEX'
+    SET_CURRENT_INDEX:'SET_CURRENT_INDEX',
+    SET_USERINFO:'SET_USERINFO'
 }
 
 // 设置播放歌曲id
@@ -23,3 +24,8 @@ export const setCurrentIndex = index=>({
     type:TYPE.SET_CURRENT_INDEX,
     index
 });
+
+export const setuserInfo = userInfo=>({
+    type: TYPE.SET_USERINFO,
+    userInfo
+})

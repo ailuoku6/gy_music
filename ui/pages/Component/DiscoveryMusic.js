@@ -17,13 +17,14 @@ import {
     NativeModules,
     ScrollView
 } from 'react-native';
-import {Button, TextInput, Checkbox, Surface, Searchbar, Appbar, Subheading, TouchableRipple} from 'react-native-paper';
+import { Searchbar, Appbar, Subheading, TouchableRipple} from 'react-native-paper';
 
 import { connect } from 'react-redux';
 import { setSongList } from '../../redux/actions'
 import SongList from '../widgets/SongList'
 import RankingItem from '../widgets/RankingItem'
 import randomImg from '../utils/config'
+import HeadBar from '../widgets/HeadBar'
 
 
 //import TestFlatListSelect from "../components/Test";
@@ -62,10 +63,10 @@ class DiscoveryMusic extends Component {
     }
 
     doSearch(){
-        // this.props.navigation.navigate('SearchPage',{
-        //     keyword:this.state.keyword
-        // })
-        alert(JSON.stringify(this.props))
+        this.props.navigation.navigate('SearchPage',{
+            keyword:this.state.keyword
+        })
+        // alert(JSON.stringify(this.props))
     }
 
     render() {
@@ -84,7 +85,7 @@ class DiscoveryMusic extends Component {
                         {/*/>*/}
                         {this.state.searchShow?(
                             <Searchbar
-                                placeholder="Search"
+                                placeholder="搜索歌名"
                                 onChangeText={query => { this.setState({ keyword: query}); }}
                                 value={keyword}
                                 ref={'searchbar'}

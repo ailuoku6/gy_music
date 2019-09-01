@@ -14,12 +14,15 @@ import {
     View,
     ToastAndroid,
     BackHandler,
-    NativeModules
+    NativeModules, ScrollView,
 } from 'react-native';
-import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
+import { Searchbar, Appbar, Subheading, TouchableRipple} from 'react-native-paper';
 
 import { connect } from 'react-redux';
 import { setSongList } from '../../redux/actions'
+import SongList from '../widgets/SongList';
+import randomImg from '../utils/config';
+import MySonglist from '../widgets/MySonglist';
 
 
 //import TestFlatListSelect from "../components/Test";
@@ -36,6 +39,8 @@ class MyMusic extends Component {
     constructor() {
         super();
         this.state = {
+            searchShow:false,
+            keyword:''
         };
     }
     // static navigationOptions = {
@@ -47,19 +52,90 @@ class MyMusic extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
+    wrapClick(){
+        if (this.state.searchShow){
+            this.setState({
+                searchShow:false
+            })
+        }
+    }
+
+    doSearch(){
+        this.props.navigation.navigate('SearchPage',{
+            keyword:this.state.keyword
+        })
+        // alert(JSON.stringify(this.props))
+    }
+
     render() {
 
+        let keyword = this.state.keyword;
+
         return (
-            <View style={styles.container}>
-                <Text>MyMusic</Text>
-            </View>
+            <TouchableRipple onPress={()=>{
+                this.wrapClick()
+            }}>
+                <ScrollView style={styles.container}>
+
+                    <Appbar.Header>
+                        {/*<Appbar.BackAction*/}
+                        {/*    onPress={}*/}
+                        {/*/>*/}
+                        {this.state.searchShow?(
+                            <Searchbar
+                                placeholder="搜索歌名"
+                                onChangeText={query => { this.setState({ keyword: query}); }}
+                                value={keyword}
+                                ref={'searchbar'}
+                                onIconPress={()=>{
+                                    this.setState({
+                                        searchShow:false
+                                    })
+                                }}
+                                onSubmitEditing={()=>{
+                                    this.setState({
+                                        searchShow:false
+                                    });
+                                    this.doSearch();
+                                }}
+                            />
+                        ):null}
+                        <Appbar.Content
+                            title="云音乐"
+                            subtitle="我的音乐"
+                        />
+                        <Appbar.Action icon="search" onPress={()=>{
+                            this.setState({
+                                searchShow:true
+                            })
+                        }} />
+                        <Appbar.Action icon="more-vert" onPress={()=>{
+
+                        }} />
+                    </Appbar.Header>
+
+                    <Subheading style={{marginLeft:5,marginTop:10}}>我创建的歌单</Subheading>
+
+                    <MySonglist
+                        ItemData={{songListCover:randomImg(),songListTitle:'我喜欢的音乐'}}
+                        onPress={()=>{
+
+                        }}
+                        onMoreClick={()=>{
+
+                        }}
+                    />
+
+
+                </ScrollView>
+            </TouchableRipple>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container:{
-        height:'100%',
+        // height:'100%',
         width:'100%',
         // alignItems:'center',
         // justifyContent:'center',

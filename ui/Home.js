@@ -22,6 +22,9 @@ import Login from './pages/Login'
 import Main from './pages/Main'
 import SearchPage from './pages/SearchPage'
 
+import { connect } from 'react-redux'
+import { setSongList } from './redux/actions'
+
 //import TestFlatListSelect from "../components/Test";
 
 // const instructions = Platform.select({
@@ -61,10 +64,14 @@ class Home extends Component {
         // alert(JSON.stringify(this.props))
         return (
             <View style={styles.container}>
-                {/*<Login/>*/}
-                <Main
-                    navigation={this.props.navigation}
-                />
+                {this.props.userInfo===null?(
+                    <Login/>
+                ):(
+                    <Main
+                        navigation={this.props.navigation}
+                    />
+                )}
+
             </View>
         );
     }
@@ -80,14 +87,27 @@ const styles = StyleSheet.create({
     }
 });
 
+const mapStateToProps = ({playList,UserInfo}) => ({
+    list: playList.list,
+    index:playList.index,
+    playList,
+    userInfo:UserInfo.userInfo
+});
+
 const AppNavigator = createStackNavigator(
     {
-        Home: Home,
+        // Home: Home,
+        Home:connect(mapStateToProps)(Home),
         SearchPage:SearchPage
     },
     {
-        initialRouteName: "Home"
+        initialRouteName: 'Home'
     }
 );
 
 export default createAppContainer(AppNavigator);
+
+
+// export default connect(mapStateToProps)(createAppContainer(AppNavigator));
+
+// export default createAppContainer()
