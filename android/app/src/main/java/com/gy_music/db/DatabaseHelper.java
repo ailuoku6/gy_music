@@ -14,7 +14,6 @@ import com.gy_music.entity.Song;
 import com.gy_music.entity.SongList;
 import com.gy_music.entity.Song_list_song;
 import com.gy_music.entity.User;
-import com.gy_music.entity.ArtsCompany;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -28,7 +27,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATA_BASE_VERSION = 1;
 
     private Dao<Album,String> albumStringDao;
-    private Dao<ArtsCompany,String> artsCompanyStringDao;
+//    private Dao<ArtsCompany,String> artsCompanyStringDao;
     private Dao<Comment,String> commentStringDao;
     private Dao<Ranking,String> rankingStringDao;
     private Dao<Ranking_item,String> rankingItemStringDao;
@@ -47,7 +46,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
             TableUtils.createTable(connectionSource, User.class);
-            TableUtils.createTable(connectionSource, ArtsCompany.class);
+//            TableUtils.createTable(connectionSource, ArtsCompany.class);
             TableUtils.createTable(connectionSource, Singer.class);
             TableUtils.createTable(connectionSource,SongList.class);
             TableUtils.createTable(connectionSource, Album.class);
@@ -69,7 +68,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
             TableUtils.dropTable(connectionSource, Album.class,true);
-            TableUtils.dropTable(connectionSource, ArtsCompany.class,true);
+//            TableUtils.dropTable(connectionSource, ArtsCompany.class,true);
             TableUtils.dropTable(connectionSource, Comment.class,true);
             TableUtils.dropTable(connectionSource, Ranking.class,true);
             TableUtils.dropTable(connectionSource, Ranking_item.class,true);
@@ -107,11 +106,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return albumStringDao;
     }
 
-    public Dao<ArtsCompany, String> getArtsCompanyStringDao() throws SQLException{
-        if (artsCompanyStringDao == null)
-            artsCompanyStringDao = getDao(ArtsCompany.class);
-        return artsCompanyStringDao;
-    }
+//    public Dao<ArtsCompany, String> getArtsCompanyStringDao() throws SQLException{
+//        if (artsCompanyStringDao == null)
+//            artsCompanyStringDao = getDao(ArtsCompany.class);
+//        return artsCompanyStringDao;
+//    }
 
     public Dao<Comment, String> getCommentStringDao() throws SQLException{
         if (commentStringDao == null)
@@ -170,7 +169,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close(){
         super.close();
         albumStringDao = null;
-        artsCompanyStringDao = null;
+//        artsCompanyStringDao = null;
         commentStringDao = null;
         rankingStringDao = null;
         rankingItemStringDao = null;

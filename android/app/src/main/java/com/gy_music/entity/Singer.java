@@ -7,8 +7,8 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Singer {
     @DatabaseField(columnName = "singerId",id = true)
     private String singerId;
-    @DatabaseField(columnName = "companyId",foreign = true,foreignColumnName = "artsCompanyId")
-    private ArtsCompany artsCompany;
+//    @DatabaseField(columnName = "companyId",foreign = true,foreignColumnName = "artsCompanyId")
+//    private ArtsCompany artsCompany;
     @DatabaseField(columnName = "singerName")
     private String singerName;
     @DatabaseField(columnName = "singerSex")
@@ -22,9 +22,9 @@ public class Singer {
         return singerId;
     }
 
-    public ArtsCompany getArtsCompany() {
-        return artsCompany;
-    }
+//    public ArtsCompany getArtsCompany() {
+//        return artsCompany;
+//    }
 
     public String getSingerName() {
         return singerName;
@@ -46,9 +46,9 @@ public class Singer {
         this.singerId = singerId;
     }
 
-    public void setArtsCompany(ArtsCompany artsCompany) {
-        this.artsCompany = artsCompany;
-    }
+//    public void setArtsCompany(ArtsCompany artsCompany) {
+//        this.artsCompany = artsCompany;
+//    }
 
     public void setSingerName(String singerName) {
         this.singerName = singerName;
@@ -69,9 +69,9 @@ public class Singer {
     public Singer() {
     }
 
-    public Singer(String singerId, ArtsCompany artsCompany, String singerName, String singerSex, String singerAvatar, String singerIntro) {
+    public Singer(String singerId, String singerName, String singerSex, String singerAvatar, String singerIntro) {
         this.singerId = singerId;
-        this.artsCompany = artsCompany;
+//        this.artsCompany = artsCompany;
         this.singerName = singerName;
         this.singerSex = singerSex;
         this.singerAvatar = singerAvatar;

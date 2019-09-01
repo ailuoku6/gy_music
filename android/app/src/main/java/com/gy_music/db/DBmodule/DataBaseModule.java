@@ -9,10 +9,14 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.gy_music.db.DatabaseHelper;
+import com.gy_music.entity.Album;
 import com.gy_music.entity.Ranking;
 import com.gy_music.entity.Ranking_item;
+import com.gy_music.entity.Singer;
+import com.gy_music.entity.Singer_song;
 import com.gy_music.entity.Song;
 import com.gy_music.entity.SongList;
+import com.gy_music.entity.Song_list_song;
 import com.gy_music.entity.User;
 import com.gy_music.utils.Md5util;
 import com.gy_music.utils.RandomImg;
@@ -22,6 +26,7 @@ import com.gy_music.utils.config;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -207,6 +212,149 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             mp.resolve("fail");
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+    }
+
+    @ReactMethod
+    public void AddSinger(String singerName,String singerSex,String singerAvatar,String singerIntro,Promise promise){//添加歌手
+        Promise mp = promise;
+        Singer singer = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            singer = new Singer(UUID_g.randomUUID(),singerName,singerSex,singerAvatar,singerIntro);
+            helper.getSingerStringDao().create(singer);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void AddAlbum(String singerId,String albumName,String albumCover,String albumIntro,Promise promise){//添加专辑
+        Promise mp = promise;
+        Album album = null;
+        Singer singer = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            singer = helper.getSingerStringDao().queryForId(singerId);
+            if (singer==null){
+                mp.resolve("fail");
+                return;
+            }
+            album = new Album(UUID_g.randomUUID(),singer,albumName,albumCover,albumIntro);
+            helper.getAlbumStringDao().create(album);
+            mp.resolve("succ");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @ReactMethod
+    public void AddSong(String albumId,String songName,String singerId,String link,String songCover,Integer price,Promise promise){//添加歌曲
+        Promise mp = promise;
+        Album album = null;
+        Singer singer = null;
+        Singer_song singer_song = null;
+        Song song = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            album = helper.getAlbumStringDao().queryForId(albumId);
+            singer = helper.getSingerStringDao().queryForId(singerId);
+            if (album==null||singer==null){
+                mp.resolve("fail");
+                return;
+            }
+            song = new Song(UUID_g.randomUUID(),album,songName,link,songCover,price);
+            singer_song = new Singer_song(singer,song);
+            helper.getSongStringDao().create(song);
+            helper.getSingerSongStringDao().create(singer_song);
+            mp.resolve("succ");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @ReactMethod
+    public void AddSongList(String userId,String songListTitle,String songListIntro,String songListCover,Promise promise){//创建歌单，包括官方推荐歌单
+        Promise mp = promise;
+        User user = null;
+        SongList songList = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            if (!"".equals(userId)){
+                user = helper.getUserListStringDao().queryForId(userId);
+            }
+            songList = new SongList(UUID_g.randomUUID(),user,songListTitle,songListIntro,songListCover);
+            if (helper.getSongListStringDao().queryBuilder().where().eq("userId",user.getUserId()).and().eq("songListTitle",songListTitle).queryForFirst()!=null){
+                mp.resolve("exited");
+                return;
+            }
+            helper.getSongListStringDao().create(songList);
+            mp.resolve("succ");
+        }catch (SQLException e){
+
+        }
+    }
+
+    @ReactMethod
+    public void AddSonglistSong(String songlistId,String songId,Promise promise){//往歌单里添加歌曲
+        Promise mp = promise;
+        SongList songList = null;
+        Song song = null;
+        Song_list_song song_list_song = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            songList = helper.getSongListStringDao().queryForId(songlistId);
+            song = helper.getSongStringDao().queryForId(songId);
+            song_list_song = new Song_list_song(songList,song);
+            helper.getSongListSongStringDao().createOrUpdate(song_list_song);
+            mp.resolve("succ");
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+    }
+
+    @ReactMethod
+    public void AddRanking(String rankingName,Promise promise){//添加排行榜
+        Promise mp = promise;
+        Ranking ranking = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            ranking = helper.getRankingStringDao().queryBuilder().where().eq("rankingName",rankingName).queryForFirst();
+            if (ranking==null){
+                ranking = new Ranking(UUID_g.randomUUID(),rankingName,new Date());
+                helper.getRankingStringDao().create(ranking);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @ReactMethod
+    public void AddRankingitem(String rankingId,String songId,Integer hot,Promise promise){//添加排行榜中的歌曲
+        Promise mp = promise;
+        Ranking_item rankingItem = null;
+        Ranking ranking = null;
+        Song song = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            ranking = helper.getRankingStringDao().queryForId(rankingId);
+            song = helper.getSongStringDao().queryForId(songId);
+            if (ranking==null||song==null){
+                mp.resolve("fail");
+                return;
+            }
+
+            rankingItem = new Ranking_item(ranking,song,hot);
+
+            helper.getRankingItemStringDao().createOrUpdate(rankingItem);
+
+            mp.resolve("succ");
+
         }catch (SQLException e){
             e.printStackTrace();
             mp.resolve("fail");

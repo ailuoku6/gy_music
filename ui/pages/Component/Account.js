@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import { setSongList,setuserInfo } from '../../redux/actions'
 import randomImg from '../utils/config';
 import * as TextTool from '../widgets/TextTool'
+import AdminView from '../AdminView'
 
 
 //import TestFlatListSelect from "../components/Test";
@@ -58,6 +59,8 @@ class Account extends Component {
     // }
 
     render() {
+
+        // alert(JSON.stringify(this.props))
 
         return (
             <View style={styles.container}>
@@ -100,7 +103,7 @@ class Account extends Component {
 
                 {this.props.userInfo.role==='1'?(
                     <TouchableRipple onPress={()=>{
-
+                        this.props.navigation.navigate('AdminView');
                     }}>
                         <List.Item
                             title={'管理员选项'}

@@ -21,6 +21,7 @@ import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
 import Login from './pages/Login'
 import Main from './pages/Main'
 import SearchPage from './pages/SearchPage'
+import AdminView from './pages/AdminView'
 
 import { connect } from 'react-redux'
 import { setSongList } from './redux/actions'
@@ -98,7 +99,8 @@ const AppNavigator = createStackNavigator(
     {
         // Home: Home,
         Home:connect(mapStateToProps)(Home),
-        SearchPage:SearchPage
+        SearchPage:SearchPage,
+        AdminView:AdminView,
     },
     {
         initialRouteName: 'Home'
