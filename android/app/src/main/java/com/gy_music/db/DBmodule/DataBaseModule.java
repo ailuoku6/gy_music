@@ -218,6 +218,8 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         }
     }
 
+
+
     @ReactMethod
     public void AddSinger(String singerName,String singerSex,String singerAvatar,String singerIntro,Promise promise){//添加歌手
         Promise mp = promise;
@@ -230,6 +232,20 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
         }
         mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void getAllSinger(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Singer> singers = new ArrayList<>();
+        try {
+            singers = helper.getSingerStringDao().queryForAll();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        mp.resolve(JSON.toJSONString(singers));
     }
 
     @ReactMethod
@@ -250,6 +266,20 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    @ReactMethod
+    public void getAllAlbum(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Album> albums = new ArrayList<>();
+        try {
+            albums = helper.getAlbumStringDao().queryForAll();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        mp.resolve(JSON.toJSONString(albums));
     }
 
     @ReactMethod
@@ -277,6 +307,8 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         }
     }
 
+
+
     @ReactMethod
     public void AddSongList(String userId,String songListTitle,String songListIntro,String songListCover,Promise promise){//创建歌单，包括官方推荐歌单
         Promise mp = promise;
@@ -297,6 +329,19 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         }catch (SQLException e){
 
         }
+    }
+
+    @ReactMethod
+    public void getAllSonglist(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<SongList> songLists = new ArrayList<>();
+        try {
+            songLists = helper.getSongListStringDao().queryForAll();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        mp.resolve(JSON.toJSONString(songLists));
     }
 
     @ReactMethod
@@ -359,6 +404,20 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
             mp.resolve("fail");
         }
+    }
+
+    @ReactMethod
+    public void getAllRanking(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Ranking> rankings = new ArrayList<>();
+        try {
+            rankings = helper.getRankingStringDao().queryForAll();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        mp.resolve(JSON.toJSONString(rankings));
     }
 
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View ,StyleSheet } from 'react-native'
+import { View ,StyleSheet,ScrollView } from 'react-native'
 import { Searchbar, Appbar, Subheading, TouchableRipple} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
@@ -22,7 +22,9 @@ class AdminView extends React.Component {
 
         return (
             <View style={{width:'100%',height:'100%'}}>
+                <ScrollView>
 
+                </ScrollView>
             </View>
         );
     }

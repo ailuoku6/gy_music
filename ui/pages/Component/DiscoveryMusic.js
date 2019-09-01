@@ -77,93 +77,96 @@ class DiscoveryMusic extends Component {
             <TouchableRipple onPress={()=>{
                 this.wrapClick()
             }}>
-                <ScrollView style={styles.container}>
 
-                    <Appbar.Header>
-                        {/*<Appbar.BackAction*/}
-                        {/*    onPress={}*/}
-                        {/*/>*/}
-                        {this.state.searchShow?(
-                            <Searchbar
-                                placeholder="搜索歌名"
-                                onChangeText={query => { this.setState({ keyword: query}); }}
-                                value={keyword}
-                                ref={'searchbar'}
-                                onIconPress={()=>{
-                                    this.setState({
-                                        searchShow:false
-                                    })
-                                }}
-                                onSubmitEditing={()=>{
-                                    this.setState({
-                                        searchShow:false
-                                    });
-                                    this.doSearch();
-                                }}
+                <View style={{width: '100%',height:'100%'}}>
+                    <ScrollView style={styles.container}>
+
+                        <Appbar.Header>
+                            {/*<Appbar.BackAction*/}
+                            {/*    onPress={}*/}
+                            {/*/>*/}
+                            {this.state.searchShow?(
+                                <Searchbar
+                                    placeholder="搜索歌名"
+                                    onChangeText={query => { this.setState({ keyword: query}); }}
+                                    value={keyword}
+                                    ref={'searchbar'}
+                                    onIconPress={()=>{
+                                        this.setState({
+                                            searchShow:false
+                                        })
+                                    }}
+                                    onSubmitEditing={()=>{
+                                        this.setState({
+                                            searchShow:false
+                                        });
+                                        this.doSearch();
+                                    }}
+                                />
+                            ):null}
+                            <Appbar.Content
+                                title="云音乐"
+                                subtitle="发现音乐"
                             />
-                        ):null}
-                        <Appbar.Content
-                            title="云音乐"
-                            subtitle="发现音乐"
+                            <Appbar.Action icon="search" onPress={()=>{
+                                this.setState({
+                                    searchShow:true
+                                })
+                            }} />
+                            <Appbar.Action icon="more-vert" onPress={()=>{
+
+                            }} />
+                        </Appbar.Header>
+
+                        <Subheading style={{marginLeft:5,marginTop:10}}>推荐歌单</Subheading>
+
+
+                        <View style={styles.songListWrap}>
+                            <SongList
+                                title={'雅俗共赏'}
+                                subTitle={'快写一首情歌雅俗共赏'}
+                                picUrl={randomImg()}
+                                rowNum={3}
+                                item={{playCount:100000000}}
+                            />
+                            <SongList
+                                title={'雅俗共赏'}
+                                subTitle={'快写一首情歌雅俗共赏'}
+                                picUrl={randomImg()}
+                                rowNum={3}
+                                item={{playCount:100000000}}
+                            />
+                            <SongList
+                                title={'雅俗共赏'}
+                                subTitle={'快写一首情歌雅俗共赏'}
+                                picUrl={randomImg()}
+                                rowNum={3}
+                                item={{playCount:100000000}}
+                            />
+                            <SongList
+                                title={'雅俗共赏'}
+                                subTitle={'快写一首情歌雅俗共赏'}
+                                picUrl={randomImg()}
+                                rowNum={3}
+                                item={{playCount:100000000}}
+                            />
+                            <SongList
+                                title={'雅俗共赏'}
+                                subTitle={'快写一首情歌雅俗共赏'}
+                                picUrl={randomImg()}
+                                rowNum={3}
+                                item={{playCount:100000000}}
+                            />
+                        </View>
+
+                        <Subheading style={{marginLeft:5,marginTop:10}}>排行榜</Subheading>
+
+                        <RankingItem
+                            ItemData={{cover:randomImg(),intro:'hdcdce',song:["vcgvcs","cdhgsvchg","cshgcvhg"]}}
                         />
-                        <Appbar.Action icon="search" onPress={()=>{
-                            this.setState({
-                                searchShow:true
-                            })
-                        }} />
-                        <Appbar.Action icon="more-vert" onPress={()=>{
 
-                        }} />
-                    </Appbar.Header>
-
-                    <Subheading style={{marginLeft:5,marginTop:10}}>推荐歌单</Subheading>
-
-
-                    <View style={styles.songListWrap}>
-                        <SongList
-                            title={'雅俗共赏'}
-                            subTitle={'快写一首情歌雅俗共赏'}
-                            picUrl={randomImg()}
-                            rowNum={3}
-                            item={{playCount:100000000}}
-                        />
-                        <SongList
-                            title={'雅俗共赏'}
-                            subTitle={'快写一首情歌雅俗共赏'}
-                            picUrl={randomImg()}
-                            rowNum={3}
-                            item={{playCount:100000000}}
-                        />
-                        <SongList
-                            title={'雅俗共赏'}
-                            subTitle={'快写一首情歌雅俗共赏'}
-                            picUrl={randomImg()}
-                            rowNum={3}
-                            item={{playCount:100000000}}
-                        />
-                        <SongList
-                            title={'雅俗共赏'}
-                            subTitle={'快写一首情歌雅俗共赏'}
-                            picUrl={randomImg()}
-                            rowNum={3}
-                            item={{playCount:100000000}}
-                        />
-                        <SongList
-                            title={'雅俗共赏'}
-                            subTitle={'快写一首情歌雅俗共赏'}
-                            picUrl={randomImg()}
-                            rowNum={3}
-                            item={{playCount:100000000}}
-                        />
-                    </View>
-
-                    <Subheading style={{marginLeft:5,marginTop:10}}>排行榜</Subheading>
-
-                    <RankingItem
-                        ItemData={{cover:randomImg(),intro:'hdcdce',song:["vcgvcs","cdhgsvchg","cshgcvhg"]}}
-                    />
-
-                </ScrollView>
+                    </ScrollView>
+                </View>
             </TouchableRipple>
 
         );
