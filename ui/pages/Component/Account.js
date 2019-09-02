@@ -15,6 +15,7 @@ import {
     ToastAndroid,
     BackHandler,
     NativeModules,
+    ScrollView,
     Alert
 } from 'react-native';
 import { Button,List,TouchableRipple,Dialog, Portal,TextInput } from 'react-native-paper';
@@ -65,80 +66,84 @@ class Account extends Component {
         return (
             <View style={styles.container}>
 
-                <View style={{width: '100%',alignItems:'center',justifyContent:'center',padding:15}}>
-                    <Avatar.Image size={100} source={{uri:this.props.userInfo.avatar?this.props.userInfo.avatar:randomImg()}} />
-                    <TextTool.H4>{this.props.userInfo.userName}</TextTool.H4>
-                </View>
+                <ScrollView>
+                    <View style={{width: '100%',alignItems:'center',justifyContent:'center',padding:15}}>
+                        <Avatar.Image size={100} source={{uri:this.props.userInfo.avatar?this.props.userInfo.avatar:randomImg()}} />
+                        <TextTool.H4>{this.props.userInfo.userName}</TextTool.H4>
+                    </View>
 
-                <TouchableRipple onPress={()=>{
-
-                }}>
-                    <List.Item
-                        title={'用户名:  '+this.props.userInfo.userName}
-                        // description="Item description"
-                        left={props => <List.Icon {...props} icon="account-circle" />}
-                    />
-                </TouchableRipple>
-
-                <TouchableRipple onPress={()=>{
-                    this.setState({
-                        passwordvisible:true
-                    })
-                }}>
-                    <List.Item
-                        title={'修改密码'}
-                        // description="Item description"
-                        left={props => <List.Icon {...props} icon="folder" />}
-                    />
-                </TouchableRipple>
-                <TouchableRipple onPress={()=>{
-
-                }}>
-                    <List.Item
-                        title={'用户角色:  ' + (this.props.userInfo.role==='1'?"管理员":"普通用户")}
-                        // description="Item description"
-                        left={props => <List.Icon {...props} icon="account-circle" />}
-                    />
-                </TouchableRipple>
-
-                {this.props.userInfo.role==='1'?(
                     <TouchableRipple onPress={()=>{
-                        this.props.navigation.navigate('AdminView');
+
                     }}>
                         <List.Item
-                            title={'管理员选项'}
+                            title={'用户名:  '+this.props.userInfo.userName}
                             // description="Item description"
                             left={props => <List.Icon {...props} icon="account-circle" />}
                         />
                     </TouchableRipple>
-                ):null}
 
-                <TouchableRipple onPress={()=>{
-                    this.setState({
-                        changed:true
-                    })
-                }}>
-                    <List.Item
-                        title={'余额:  ' + (this.props.userInfo.balance)}
-                        // description="Item description"
-                        left={props => <List.Icon {...props} icon="folder" />}
-                    />
-                </TouchableRipple>
+                    <TouchableRipple onPress={()=>{
+                        this.setState({
+                            passwordvisible:true
+                        })
+                    }}>
+                        <List.Item
+                            title={'修改密码'}
+                            // description="Item description"
+                            left={props => <List.Icon {...props} icon="folder" />}
+                        />
+                    </TouchableRipple>
+                    <TouchableRipple onPress={()=>{
 
-                <Button mode="contained" style={{margin:15}} onPress={() => {
-                    Alert.alert(
-                        '确认退出登录',
-                        null,
-                        [
-                            {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                            {text: '确认', onPress: () => this.props.dispatch(setuserInfo(null))},
-                        ],
-                        { cancelable: true }
-                    )
-                }}>
-                    退出登录
-                </Button>
-                <Text>{JSON.stringify(this.props)}</Text>
+                    }}>
+                        <List.Item
+                            title={'用户角色:  ' + (this.props.userInfo.role==='1'?"管理员":"普通用户")}
+                            // description="Item description"
+                            left={props => <List.Icon {...props} icon="account-circle" />}
+                        />
+                    </TouchableRipple>
+
+                    {this.props.userInfo.role==='1'?(
+                        <TouchableRipple onPress={()=>{
+                            this.props.navigation.navigate('AdminView');
+                        }}>
+                            <List.Item
+                                title={'管理员选项'}
+                                // description="Item description"
+                                left={props => <List.Icon {...props} icon="account-circle" />}
+                            />
+                        </TouchableRipple>
+                    ):null}
+
+                    <TouchableRipple onPress={()=>{
+                        this.setState({
+                            changed:true
+                        })
+                    }}>
+                        <List.Item
+                            title={'余额:  ' + (this.props.userInfo.balance)}
+                            // description="Item description"
+                            left={props => <List.Icon {...props} icon="folder" />}
+                        />
+                    </TouchableRipple>
+
+                    <Button mode="contained" style={{margin:15}} onPress={() => {
+                        Alert.alert(
+                            '确认退出登录',
+                            null,
+                            [
+                                {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                {text: '确认', onPress: () => this.props.dispatch(setuserInfo(null))},
+                            ],
+                            { cancelable: true }
+                        )
+                    }}>
+                        退出登录
+                    </Button>
+                    <Text>{JSON.stringify(this.props)}</Text>
+                </ScrollView>
+
+
                 <Portal>
                     <Dialog
                         visible={this.state.passwordvisible}

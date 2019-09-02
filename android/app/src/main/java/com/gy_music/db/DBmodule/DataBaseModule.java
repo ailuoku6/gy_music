@@ -22,6 +22,8 @@ import com.gy_music.utils.Md5util;
 import com.gy_music.utils.RandomImg;
 import com.gy_music.utils.UUID_g;
 import com.gy_music.utils.config;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
@@ -89,7 +91,7 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             SongList songList = null;
             try {
                 newuser = new User(UUID_g.randomUUID(),userName,Md5util.md5(passWord),signupAsroot?"1":"0", config.defaultAvatar,0);
-                songList = new SongList(UUID_g.randomUUID(),user,"我喜欢的音乐",user.getUserName()+"喜欢的音乐", RandomImg.getRandomImg());
+                songList = new SongList(UUID_g.randomUUID(),newuser,"我喜欢的音乐",newuser.getUserName()+"喜欢的音乐", RandomImg.getRandomImg());
                 databaseHelper.getUserListStringDao().create(newuser);
                 databaseHelper.getSongListStringDao().create(songList);
             }catch (SQLException e){
@@ -283,6 +285,19 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getAllSong(Promise promise){
+        Promise mp = promise;
+        List<Song> songs = new ArrayList<>();
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            songs = helper.getSongStringDao().queryForAll();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        mp.resolve(JSON.toJSONString(songs));
+    }
+
+    @ReactMethod
     public void AddSong(String albumId,String songName,String singerId,String link,String songCover,Integer price,Promise promise){//添加歌曲
         Promise mp = promise;
         Album album = null;
@@ -327,7 +342,7 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             helper.getSongListStringDao().create(songList);
             mp.resolve("succ");
         }catch (SQLException e){
-
+            e.printStackTrace();
         }
     }
 
@@ -337,7 +352,20 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
         List<SongList> songLists = new ArrayList<>();
         try {
-            songLists = helper.getSongListStringDao().queryForAll();
+            //songLists = helper.getSongListStringDao().queryBuilder().where().not().like("songListTitle","我喜欢的音乐").
+            QueryBuilder songlistQueryBuilder = helper.getSongListStringDao().queryBuilder();
+            QueryBuilder userQueryBuilder = helper.getUserListStringDao().queryBuilder();
+
+            Where songlistWhere = songlistQueryBuilder.where();
+            songlistWhere.not().like("songListTitle","%我喜欢的音乐%");
+
+            Where userWhere = userQueryBuilder.where();
+            userWhere.not().eq("role","0");
+
+            QueryBuilder resultQueryBuilder = songlistQueryBuilder.join(userQueryBuilder);
+
+            songLists = resultQueryBuilder.query();
+
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -376,7 +404,9 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             }
         }catch (SQLException e){
             e.printStackTrace();
+            mp.resolve("fail");
         }
+        mp.resolve("succ");
     }
 
     @ReactMethod
