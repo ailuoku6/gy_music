@@ -2,6 +2,7 @@ package com.gy_music.db.DBmodule;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.facebook.react.bridge.Promise;
@@ -159,7 +160,26 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         List<Song> songs = new ArrayList<>();
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(mContext);
         try {
-            songs = databaseHelper.getSongStringDao().queryBuilder().where().like("songName",keyword).or().like("singerName",keyword).query();
+
+            QueryBuilder songQueryBuilder = databaseHelper.getSongStringDao().queryBuilder();
+            QueryBuilder albumQuerybuilder = databaseHelper.getAlbumStringDao().queryBuilder();
+            QueryBuilder singerQueryBuild = databaseHelper.getSingerStringDao().queryBuilder();
+
+            Where songWhere = songQueryBuilder.where();
+            songWhere.like("songName","%"+keyword+"%");
+
+            Where albumWhere = albumQuerybuilder.where();
+            albumWhere.like("albumName","%"+keyword+"%");
+
+            Where singerWhere = singerQueryBuild.where();
+            singerWhere.like("singerName","%"+keyword+"%");
+
+            QueryBuilder resultBuilder = songQueryBuilder.joinOr(albumQuerybuilder.joinOr(singerQueryBuild));
+
+            songs = resultBuilder.query();
+
+
+//            songs = databaseHelper.getSongStringDao().queryBuilder().where().like("songName","%"+keyword+"%").query();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -416,6 +436,8 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         Ranking ranking = null;
         Song song = null;
         DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+
+        Log.d("AddRankingitem", "AddRankingitem: "+rankingId+"    "+songId+"     "+hot);
         try {
             ranking = helper.getRankingStringDao().queryForId(rankingId);
             song = helper.getSongStringDao().queryForId(songId);
@@ -424,8 +446,13 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
                 return;
             }
 
-            rankingItem = new Ranking_item(ranking,song,hot);
+            rankingItem = helper.getRankingItemStringDao().queryBuilder().where().eq("rankingid",rankingId).and().eq("rankingSongid",songId).queryForFirst();
 
+            if (rankingItem!=null){
+                rankingItem.setHot(hot);
+            }else {
+                rankingItem = new Ranking_item(UUID_g.randomUUID(),ranking,song,hot);
+            }
             helper.getRankingItemStringDao().createOrUpdate(rankingItem);
 
             mp.resolve("succ");

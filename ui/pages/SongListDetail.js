@@ -7,7 +7,7 @@ import { setSongList } from '../redux/actions'
 import SongItem from './widgets/SongItem'
 import judgeValue from './utils/judgeValue';
 
-class SearchPage extends React.Component {
+class SongListDetail extends React.Component {
     state = {
         keyword:'',
         songlist:[]
@@ -116,4 +116,4 @@ const mapStateToProps = ({playList,UserInfo}) => ({
     userInfo:UserInfo.userInfo
 });
 
-export default connect(mapStateToProps)(SearchPage);
+export default connect(mapStateToProps)(SongListDetail);

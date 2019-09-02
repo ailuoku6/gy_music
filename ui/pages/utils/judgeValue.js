@@ -5,7 +5,7 @@
 const judgeValue = (...arg)=>{
     let flag = new Boolean(true);
     arg.map((item)=>{
-        if (!item&&item!==0){
+        if (!item&&item!==0||item==undefined||item==null){
             if (flag==true){
                 flag = false
             }

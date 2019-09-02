@@ -47,7 +47,7 @@ class AddSonglistSong extends Component {
             songs:[],
             RankingId:'',
             songId:'',
-            hot:Number
+            hot:''
         };
     }
     // static navigationOptions = {
@@ -126,6 +126,8 @@ class AddSonglistSong extends Component {
         return (
             <View style={styles.container}>
 
+                {/*<Text>{JSON.parse(this.state.hot)}</Text>*/}
+
 
                 <RNPickerSelect
                     onValueChange={(value) => this.setState({
@@ -143,6 +145,12 @@ class AddSonglistSong extends Component {
                     value={this.state.songId}
                     placeholder={placeholder2}
                     items={songs}
+                />
+
+                <TextInput
+                    label='热度'
+                    value={this.state.hot}
+                    onChangeText={text => this.setState({ hot:text })}
                 />
                 <Button onPress={()=>{
 
@@ -163,7 +171,7 @@ class AddSonglistSong extends Component {
                         this.setState({
                             RankingId:'',
                             songId:'',
-                            hot:Number,
+                            hot:'',
                         })
                     });
                 }} mode={'contained'}>添加</Button>

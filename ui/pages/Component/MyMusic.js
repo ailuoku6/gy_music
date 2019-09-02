@@ -40,7 +40,8 @@ class MyMusic extends Component {
         super();
         this.state = {
             searchShow:false,
-            keyword:''
+            keyword:'',
+            mySonglists:[]
         };
     }
     // static navigationOptions = {
@@ -51,6 +52,23 @@ class MyMusic extends Component {
     // changeStore(){
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
+
+    componentWillMount(): void {
+        this.getMysongLists();
+    }
+
+    componentWillUnmount() {
+    }
+
+    getMysongLists(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getMySongList(JSON.stringify(this.props.userInfo)).then((result)=>{
+            // alert(result)
+            this.setState({
+                mySonglists:JSON.parse(result)
+            })
+        })
+    }
 
     wrapClick(){
         if (this.state.searchShow){
@@ -116,15 +134,21 @@ class MyMusic extends Component {
 
                     <Subheading style={{marginLeft:5,marginTop:10}}>我创建的歌单</Subheading>
 
-                    <MySonglist
-                        ItemData={{songListCover:randomImg(),songListTitle:'我喜欢的音乐'}}
-                        onPress={()=>{
+                    {
+                        this.state.mySonglists.map((item,index)=>{
+                            return (
+                                <MySonglist
+                                    ItemData={item}
+                                    onPress={()=>{
 
-                        }}
-                        onMoreClick={()=>{
+                                    }}
+                                    onMoreClick={()=>{
 
-                        }}
-                    />
+                                    }}
+                                />
+                            )
+                        })
+                    }
 
 
                 </ScrollView>
@@ -143,10 +167,11 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = ({playList}) => ({
+const mapStateToProps = ({playList,UserInfo}) => ({
     list: playList.list,
     index:playList.index,
-    playList
+    playList,
+    userInfo:UserInfo.userInfo
 });
 
 export default connect(mapStateToProps)(MyMusic);

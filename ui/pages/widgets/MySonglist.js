@@ -25,7 +25,7 @@ class MySonglist extends PureComponent {
                     <Image style={{height:80,width:80,borderRadius:5}} source={{uri:data.songListCover}}/>
                     <View style={styles.info}>
                         <TextTool.H2 color={'#5281ff'}>{data.songListTitle}</TextTool.H2>
-                        <TextTool.Normal>{'jhbjh'}</TextTool.Normal>
+                        <TextTool.Normal>{data.songListIntro}</TextTool.Normal>
                     </View>
                 </View>
                 <TouchableRipple style={styles.rightPart} onPress={this.props.onMoreClick}>

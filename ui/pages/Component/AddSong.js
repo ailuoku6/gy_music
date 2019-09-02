@@ -50,7 +50,7 @@ class AddSong extends Component {
             songName:'',
             link:'',
             songCover:'',
-            price:Number,
+            price:'',
         };
     }
     // static navigationOptions = {
@@ -207,7 +207,7 @@ class AddSong extends Component {
                             SingerId:'',
                             link:'',
                             songCover:'',
-                            price:Number
+                            price:''
                         })
                     });
                 }} mode={'contained'}>添加</Button>

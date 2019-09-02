@@ -33,7 +33,7 @@ class SongItem extends PureComponent {
             <TouchableOpacity style={[styles.container, this.props.style]} onPress={this.props.onPress}>
                 <View style={styles.leftPart}>
                     <TextTool.H2 color={'#5281ff'}>{data.songName}</TextTool.H2>
-                    <TextTool.Normal>{data.singer+"-"+data.songName}</TextTool.Normal>
+                    <TextTool.Normal>{data.album.singer.singerName+"-"+data.songName}</TextTool.Normal>
                 </View>
                 <TouchableRipple style={styles.rightPart} onPress={this.props.onMoreClick}>
                         <Image source={require('../../assets/more.png')} style={{width:20,height:20}}></Image>

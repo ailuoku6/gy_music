@@ -140,7 +140,7 @@ class Account extends Component {
                     }}>
                         退出登录
                     </Button>
-                    <Text>{JSON.stringify(this.props)}</Text>
+                    {/*<Text>{JSON.stringify(this.props)}</Text>*/}
                 </ScrollView>
 
 
