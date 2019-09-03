@@ -1,16 +1,18 @@
 import * as React from 'react';
-import {View, StyleSheet, NativeModules,ToastAndroid} from 'react-native';
-import { Searchbar, Appbar, Subheading, TouchableRipple,Text} from 'react-native-paper';
+import {View, StyleSheet, NativeModules,ToastAndroid,FlatList,Image} from 'react-native';
+import { Searchbar, Appbar, Subheading, TouchableRipple,Text,FAB} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
 import SongItem from './widgets/SongItem'
+import { screen } from './utils';
 import judgeValue from './utils/judgeValue';
 
 class SongListDetail extends React.Component {
     state = {
-        keyword:'',
-        songlist:[]
+        SonglistId:'',
+        SongList:'',
+        songs:[]
     };
 
     static navigationOptions = {
@@ -20,24 +22,31 @@ class SongListDetail extends React.Component {
 
     componentWillMount(): void {
 
-        let keyword = this.props.navigation.state.params.keyword;
+        let SonglistId = this.props.navigation.state.params.SonglistId;
 
         this.setState({
-            keyword:keyword
-        },()=>{
-            this.doSearch()
+            SonglistId:SonglistId
+        });
+        this.getSongs(SonglistId);
+
+        this.getSongList(SonglistId);
+
+    }
+
+    getSongs(songlistId){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getSongByListId(songlistId).then((result)=>{
+            this.setState({
+                songs:JSON.parse(result)
+            })
         })
     }
 
-    doSearch(){
-        if (!judgeValue(this.state.keyword)){
-            ToastAndroid.show("关键字不能为空",ToastAndroid.SHORT);
-            return;
-        }
+    getSongList(songlistId){
         const DataBaseModule = NativeModules.DataBaseModule;
-        DataBaseModule.searchSong(this.state.keyword).then((result)=>{
+        DataBaseModule.getSongListById(songlistId).then((result)=>{
             this.setState({
-                songlist:JSON.parse(result)
+                SongList:JSON.parse(result)
             })
         })
     }
@@ -45,7 +54,7 @@ class SongListDetail extends React.Component {
     render() {
         // alert(JSON.stringify(this.props))
 
-        let keyword = this.state.keyword;
+        // let keyword = this.state.keyword;
         // let data = {songName:'雅俗共赏',singer:'许嵩'}
 
         // let songs = [];
@@ -58,54 +67,87 @@ class SongListDetail extends React.Component {
 
         return (
             <View style={{width:'100%',height:'100%'}}>
-                <Searchbar
-                    placeholder="搜索歌名"
-                    onChangeText={query => { this.setState({ keyword: query}); }}
-                    value={keyword}
-                    ref={'searchbar'}
-                    onSubmitEditing={()=>{
-                        this.doSearch();
-                    }}
-                />
+                {/*<Searchbar*/}
+                {/*    placeholder="搜索歌名"*/}
+                {/*    onChangeText={query => { this.setState({ keyword: query}); }}*/}
+                {/*    value={keyword}*/}
+                {/*    ref={'searchbar'}*/}
+                {/*    onSubmitEditing={()=>{*/}
+                {/*    }}*/}
+                {/*/>*/}
+
+                <Text>{JSON.stringify(this.state.SongList)}</Text>
+
+                {this.state.SongList&&this.state.SongList.songListCover?(
+                    <View>
+                        <Image source={{uri:this.state.SongList.songListCover}} style={{width:'100%',height:300}}/>
+                        <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.SongList.songListIntro}</Text>
+                    </View>
+                ):null}
 
                 {
-                    this.state.songlist.length===0?(
-                        <Text>无数据</Text>
+                    this.state.songs.length===0?(
+                        <Text>这里，空空如也</Text>
                     ):null
                 }
 
-                {
-                    this.state.songlist.map((item,index)=>{
-                        return (
-                            <SongItem
-                                ItemData={item}
-                                onMoreClick={
-                                    ()=>{
+                <FlatList
+                    data={this.state.songs}
+                    extraData={this.state}
+                    keyExtractor={(item,index)=>item}
+                    renderItem={({item})=>(
+                        <SongItem
+                            ItemData={item}
+                            onMoreClick={()=>{
 
-                                    }
-                                }
-                                onPress={()=>{
+                            }}
+                            onPress={()=>{
 
-                                }}
-                            ></SongItem>
-                        )
-                    })
-                }
-                {/*<SongItem*/}
-                {/*    ItemData={data}*/}
-                {/*    onMoreClick={*/}
-                {/*        ()=>{*/}
+                            }}
 
-                {/*        }*/}
-                {/*    }*/}
-                {/*></SongItem>*/}
+                        />)}
+                />
+
+                {/*{*/}
+                {/*    this.state.songlist.map((item,index)=>{*/}
+                {/*        return (*/}
+                {/*            <SongItem*/}
+                {/*                ItemData={item}*/}
+                {/*                onMoreClick={*/}
+                {/*                    ()=>{*/}
+
+                {/*                    }*/}
+                {/*                }*/}
+                {/*                onPress={()=>{*/}
+
+                {/*                }}*/}
+                {/*            ></SongItem>*/}
+                {/*        )*/}
+                {/*    })*/}
+                {/*}*/}
+
+                {/*<FAB*/}
+                {/*    style={styles.fab}*/}
+                {/*    icon="plus"*/}
+                {/*    onPress={() => {*/}
+                {/*        */}
+                {/*    }}*/}
+                {/*/>*/}
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-
+    fab: {
+        position: 'absolute',
+        margin: 30,
+        marginLeft:180,
+        marginRight:180,
+        right: 0,
+        left:0,
+        bottom: 0,
+    },
 });
 
 

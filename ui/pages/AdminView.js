@@ -26,9 +26,11 @@ class AdminView extends React.Component {
 
     componentWillMount(): void {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.state.modalVisible===true){
+            // ToastAndroid.show("backclick",ToastAndroid.SHORT)
+            if (this.state.modalVisible){
                 this.setState({
-                    modalVisible:false
+                    modalVisible:false,
+                    selectIndex:-1
                 });
                 return true;
             }

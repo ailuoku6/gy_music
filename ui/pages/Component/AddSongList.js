@@ -54,6 +54,16 @@ class AddSongList extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
+    componentWillMount(): void {
+        if (this.props.mode&&this.props.mode==='edit'&&this.props.Songlist!=null){
+            this.setState({
+                songListTitle:this.props.Songlist.songListTitle,
+                songListIntro:this.props.Songlist.songListIntro,
+                songListCover:this.props.Songlist.songListCover,
+            })
+        }
+    }
+
     render() {
 
         // alert(JSON.stringify(this.props))
@@ -92,20 +102,42 @@ class AddSongList extends Component {
                         ToastAndroid.show("请将信息填写完整",ToastAndroid.SHORT)
                         return;
                     }
-                    const DataBaseModule = NativeModules.DataBaseModule;
-                    DataBaseModule.AddSongList(this.props.userInfo.userId,this.state.songListTitle,this.state.songListIntro,this.state.songListCover).then((result)=>{
-                        if (result==='succ'){
-                            ToastAndroid.show("添加成功",ToastAndroid.SHORT);
-                        } else if (result==='fail'){
-                            ToastAndroid.show("添加失败",ToastAndroid.SHORT);
+                    if (this.props.mode&&this.props.mode==='edit'&&this.props.Songlist!=null) {
+                        const DataBaseModule = NativeModules.DataBaseModule;
+                        let Songlist = this.props.Songlist;
+                        Songlist.songListTitle = this.state.songListTitle;
+                        Songlist.songListIntro = this.state.songListIntro;
+                        Songlist.songListCover = this.state.songListCover;
+                        DataBaseModule.editSonglist(JSON.stringify(Songlist)).then((result)=>{
+                            if (result==='fail'){
+                                ToastAndroid.show("更新失败",ToastAndroid.SHORT);
+                            } else if (result==='succ'){
+                                ToastAndroid.show("更新成功",ToastAndroid.SHORT)
+                            }
+                        });
+                        if (this.props.onAddpress){
+                            this.props.onAddpress();
                         }
-                        this.setState({
-                            songListTitle:'',
-                            songListIntro:'',
-                            songListCover:'',
-                        })
-                    });
-                }} mode={'contained'}>添加</Button>
+                    }else {
+                        const DataBaseModule = NativeModules.DataBaseModule;
+                        DataBaseModule.AddSongList(this.props.userInfo.userId,this.state.songListTitle,this.state.songListIntro,this.state.songListCover).then((result)=>{
+                            if (result==='succ'){
+                                ToastAndroid.show("添加成功",ToastAndroid.SHORT);
+                                if (this.props.onAddpress){
+                                    this.props.onAddpress();
+                                }
+                            } else if (result==='fail'){
+                                ToastAndroid.show("添加失败",ToastAndroid.SHORT);
+                            }
+                            this.setState({
+                                songListTitle:'',
+                                songListIntro:'',
+                                songListCover:'',
+                            })
+                        });
+                    }
+
+                }} mode={'contained'}>{this.props.mode&&this.props.mode==='edit'?'编辑':'添加'}</Button>
             </View>
         );
     }

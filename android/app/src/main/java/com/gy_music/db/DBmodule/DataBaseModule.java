@@ -477,4 +477,67 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         mp.resolve(JSON.toJSONString(rankings));
     }
 
+    @ReactMethod
+    public void getSongByListId(String listId,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Song> songs = new ArrayList<>();
+        List<Song_list_song> songListSongs = new ArrayList<>();
+
+        try {
+            songListSongs = helper.getSongListSongStringDao().queryBuilder().where().eq("songlistId",listId).query();
+            for (Song_list_song item:songListSongs) {
+                songs.add(item.getSong());
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(songs));
+    }
+
+    @ReactMethod
+    public void getSongListById(String listId,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        SongList songList = null;
+        try {
+            songList = helper.getSongListStringDao().queryForId(listId);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        mp.resolve(JSON.toJSONString(songList));
+    }
+
+    @ReactMethod
+    public void deleteSongList(String songListInfo,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        SongList songList = JSON.parseObject(songListInfo,SongList.class);
+        try {
+            List<Song_list_song> songListSongs = new ArrayList<>();
+            songListSongs = helper.getSongListSongStringDao().queryBuilder().where().eq("songlistId",songList.getSongListId()).query();
+            helper.getSongListSongStringDao().delete(songListSongs);
+            helper.getSongListStringDao().delete(songList);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void editSonglist(String songlistInfo,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        SongList songList = JSON.parseObject(songlistInfo,SongList.class);
+        try {
+            helper.getSongListStringDao().update(songList);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve("succ");
+    }
+
 }

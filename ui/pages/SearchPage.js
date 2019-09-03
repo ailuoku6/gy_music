@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StyleSheet, NativeModules,ToastAndroid} from 'react-native';
+import {View, StyleSheet, NativeModules, ToastAndroid, FlatList} from 'react-native';
 import { Searchbar, Appbar, Subheading, TouchableRipple,Text} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
@@ -74,23 +74,40 @@ class SearchPage extends React.Component {
                     ):null
                 }
 
-                {
-                    this.state.songlist.map((item,index)=>{
-                        return (
-                            <SongItem
-                                ItemData={item}
-                                onMoreClick={
-                                    ()=>{
+                <FlatList
+                    data={this.state.songlist}
+                    extraData={this.state}
+                    keyExtractor={(item,index)=>item}
+                    renderItem={({item})=>(
+                        <SongItem
+                            ItemData={item}
+                            onMoreClick={()=>{
 
-                                    }
-                                }
-                                onPress={()=>{
+                            }}
+                            onPress={()=>{
 
-                                }}
-                            ></SongItem>
-                        )
-                    })
-                }
+                            }}
+
+                        />)}
+                />
+
+                {/*{*/}
+                {/*    this.state.songlist.map((item,index)=>{*/}
+                {/*        return (*/}
+                {/*            <SongItem*/}
+                {/*                ItemData={item}*/}
+                {/*                onMoreClick={*/}
+                {/*                    ()=>{*/}
+
+                {/*                    }*/}
+                {/*                }*/}
+                {/*                onPress={()=>{*/}
+
+                {/*                }}*/}
+                {/*            ></SongItem>*/}
+                {/*        )*/}
+                {/*    })*/}
+                {/*}*/}
                 {/*<SongItem*/}
                 {/*    ItemData={data}*/}
                 {/*    onMoreClick={*/}

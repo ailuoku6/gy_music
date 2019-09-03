@@ -14,15 +14,16 @@ import {
     View,
     ToastAndroid,
     BackHandler,
-    NativeModules, ScrollView,
+    NativeModules, ScrollView, Alert,
 } from 'react-native';
-import { Searchbar, Appbar, Subheading, TouchableRipple} from 'react-native-paper';
+import {Searchbar, Appbar, Subheading, TouchableRipple, Button, Dialog, Portal} from 'react-native-paper';
 
 import { connect } from 'react-redux';
-import { setSongList } from '../../redux/actions'
+import {setSongList, setuserInfo} from '../../redux/actions';
 import SongList from '../widgets/SongList';
 import randomImg from '../utils/config';
 import MySonglist from '../widgets/MySonglist';
+import AddSongList from './AddSongList';
 
 
 //import TestFlatListSelect from "../components/Test";
@@ -41,7 +42,11 @@ class MyMusic extends Component {
         this.state = {
             searchShow:false,
             keyword:'',
-            mySonglists:[]
+            mySonglists:[],
+            modalVisible:false,
+            changeSonglistInfo:false,
+            selectSongList:null,
+            editSonglist:false
         };
     }
     // static navigationOptions = {
@@ -140,18 +145,119 @@ class MyMusic extends Component {
                                 <MySonglist
                                     ItemData={item}
                                     onPress={()=>{
-
+                                        this.props.navigation.navigate('SongListDetail',{
+                                            SonglistId:item.songListId
+                                        });
                                     }}
                                     onMoreClick={()=>{
-
+                                        this.setState({
+                                            changeSonglistInfo:true,
+                                            selectSongList:item
+                                        })
                                     }}
                                 />
                             )
                         })
                     }
 
+                    <Button mode="contained" style={{margin:15}} onPress={() => {
+                        this.setState({
+                            modalVisible:true
+                        })
+                    }}>
+                        新建歌单
+                    </Button>
 
+                    <Portal>
+                        {this.state.modalVisible?(
+                            <Dialog
+                                visible={this.state.modalVisible}
+                                onDismiss={()=>{
+                                    this.setState({
+                                        modalVisible:false,
+                                    })
+                                }}>
+                                <Dialog.Content>
+                                    <AddSongList onAddpress={()=>{
+                                        this.getMysongLists();
+                                    }}/>
+                                </Dialog.Content>
+                            </Dialog>
+                        ):null}
+                        {this.state.editSonglist?(
+                            <Dialog
+                                visible={this.state.editSonglist}
+                                onDismiss={()=>{
+                                    this.setState({
+                                        editSonglist:false,
+                                    })
+                                }}>
+                                <Dialog.Content>
+                                    <AddSongList mode={'edit'} Songlist={this.state.selectSongList} onAddpress={()=>{
+                                        this.getMysongLists();
+                                        this.setState({
+                                            editSonglist:false
+                                        })
+                                    }}/>
+                                </Dialog.Content>
+                            </Dialog>
+                        ):null}
+                        {this.state.changeSonglistInfo?(
+                            <Dialog
+                                visible={this.state.changeSonglistInfo}
+                                onDismiss={()=>{
+                                    this.setState({
+                                        changeSonglistInfo:false,
+                                        selectSongList:null
+                                    })
+                                }}>
+                                <Dialog.Content>
+                                    <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                        this.setState({
+                                            changeSonglistInfo:false,
+                                            editSonglist:true,
+                                        });
+                                    }}>
+                                        <Text>编辑歌单信息</Text>
+                                    </TouchableRipple>
+                                    <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                        this.setState({
+                                            changeSonglistInfo:false
+                                        });
+                                        Alert.alert(
+                                            '确认删除?',
+                                            null,
+                                            [
+                                                {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                                {text: '确认', onPress: () => {
+                                                        const DataBaseModule = NativeModules.DataBaseModule;
+                                                        DataBaseModule.deleteSongList(JSON.stringify(this.state.selectSongList)).then((result)=>{
+                                                            if (result==='succ'){
+                                                                ToastAndroid.show("删除成功",ToastAndroid.SHORT);
+                                                                this.getMysongLists();
+                                                            } else if (result==='fail') {
+                                                                ToastAndroid.show("删除失败",ToastAndroid.SHORT);
+                                                                this.getMysongLists();
+                                                            }
+                                                        });
+                                                        this.setState({
+                                                            changeSonglistInfo:false,
+                                                            selectSongList:null
+                                                        })
+                                                    }},
+                                            ],
+                                            { cancelable: true }
+                                        )
+                                    }}>
+                                        <Text>删除歌单</Text>
+                                    </TouchableRipple>
+                                </Dialog.Content>
+                            </Dialog>
+                        ):null}
+                    </Portal>
                 </ScrollView>
+
+
             </TouchableRipple>
         );
     }
