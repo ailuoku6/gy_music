@@ -28,9 +28,14 @@ class MySonglist extends PureComponent {
                         <TextTool.Normal>{data.songListIntro}</TextTool.Normal>
                     </View>
                 </View>
-                <TouchableRipple style={styles.rightPart} onPress={this.props.onMoreClick}>
-                    <Image source={require('../../assets/more.png')} style={{width:20,height:20}}></Image>
-                </TouchableRipple>
+                {
+                    this.props.onMoreClick?(
+                        <TouchableRipple style={styles.rightPart} onPress={this.props.onMoreClick}>
+                            <Image source={require('../../assets/more.png')} style={{width:20,height:20}}></Image>
+                        </TouchableRipple>
+                    ):null
+                }
+
             </TouchableOpacity>
         )
     }

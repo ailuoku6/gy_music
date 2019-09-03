@@ -1,16 +1,22 @@
 import * as React from 'react';
-import {View, StyleSheet, NativeModules, ToastAndroid, FlatList} from 'react-native';
-import { Searchbar, Appbar, Subheading, TouchableRipple,Text} from 'react-native-paper';
+import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Alert} from 'react-native';
+import {Searchbar, Appbar, Subheading, TouchableRipple, Text, Dialog, Portal} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
 import SongItem from './widgets/SongItem'
 import judgeValue from './utils/judgeValue';
+import AddSongList from './Component/AddSongList';
+import MySonglist from './widgets/MySonglist';
 
 class SearchPage extends React.Component {
     state = {
         keyword:'',
-        songlist:[]
+        songlist:[],
+        MoreVisible:false,
+        AddListVisible:false,
+        selectSong:null,
+        mySonglists:[]
     };
 
     static navigationOptions = {
@@ -26,6 +32,17 @@ class SearchPage extends React.Component {
             keyword:keyword
         },()=>{
             this.doSearch()
+        });
+        this.getMysongLists();
+    }
+
+    getMysongLists(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getMySongList(JSON.stringify(this.props.userInfo)).then((result)=>{
+            // alert(result)
+            this.setState({
+                mySonglists:JSON.parse(result)
+            })
         })
     }
 
@@ -68,6 +85,8 @@ class SearchPage extends React.Component {
                     }}
                 />
 
+                {/*<Text>{JSON.stringify(this.state)}</Text>*/}
+
                 {
                     this.state.songlist.length===0?(
                         <Text>无数据</Text>
@@ -82,7 +101,10 @@ class SearchPage extends React.Component {
                         <SongItem
                             ItemData={item}
                             onMoreClick={()=>{
-
+                                this.setState({
+                                    MoreVisible:true,
+                                    selectSong:item
+                                })
                             }}
                             onPress={()=>{
 
@@ -90,6 +112,68 @@ class SearchPage extends React.Component {
 
                         />)}
                 />
+
+                <Portal>
+                    {this.state.MoreVisible?(
+                        <Dialog
+                            visible={this.state.MoreVisible}
+                            onDismiss={()=>{
+                                this.setState({
+                                    MoreVisible:false,
+                                    // selectSong:null
+                                })
+                            }}>
+                            <Dialog.Content>
+                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                    this.setState({
+                                        AddListVisible:true,
+                                        MoreVisible:false,
+                                    })
+                                }}>
+                                    <Text>添加到歌单</Text>
+                                </TouchableRipple>
+                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+
+                                }}>
+                                    <Text>评论</Text>
+                                </TouchableRipple>
+                            </Dialog.Content>
+                        </Dialog>
+                    ):null}
+                    {this.state.AddListVisible?(
+                        <Dialog
+                            visible={this.state.AddListVisible}
+                            onDismiss={()=>{
+                                this.setState({
+                                    AddListVisible:false,
+                                })
+                            }}>
+                            <Dialog.Content>
+                                {this.state.mySonglists.map((item,index)=>{
+                                    return (
+                                        <MySonglist
+                                            ItemData={item}
+                                            onPress={()=>{
+                                                const DataBaseModule = NativeModules.DataBaseModule;
+                                                DataBaseModule.AddSonglistSong(item.songListId,this.state.selectSong.songId).then((result)=>{
+                                                    if (result==='succ'){
+                                                        ToastAndroid.show("添加成功",ToastAndroid.SHORT);
+                                                    } else if (result==='fail'){
+                                                        ToastAndroid.show("添加失败",ToastAndroid.SHORT);
+                                                    }
+                                                    this.setState({
+                                                        AddListVisible:false,
+                                                        selectSong:null
+                                                    })
+                                                });
+                                            }}
+                                        />
+                                    )
+                                })}
+                            </Dialog.Content>
+                        </Dialog>
+                    ):null}
+                </Portal>
 
                 {/*{*/}
                 {/*    this.state.songlist.map((item,index)=>{*/}
