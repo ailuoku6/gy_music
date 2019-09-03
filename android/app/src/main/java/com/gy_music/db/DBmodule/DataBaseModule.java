@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -402,7 +404,10 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         try {
             songList = helper.getSongListStringDao().queryForId(songlistId);
             song = helper.getSongStringDao().queryForId(songId);
-            song_list_song = new Song_list_song(songList,song);
+            song_list_song = helper.getSongListSongStringDao().queryBuilder().where().eq("songlistId",songList.getSongListId()).and().eq("songid",song.getSongId()).queryForFirst();
+            if (song_list_song==null){
+                song_list_song = new Song_list_song(UUID_g.randomUUID(),songList,song);
+            }
             helper.getSongListSongStringDao().createOrUpdate(song_list_song);
             mp.resolve("succ");
         }catch (SQLException e){
@@ -487,7 +492,8 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         try {
             songListSongs = helper.getSongListSongStringDao().queryBuilder().where().eq("songlistId",listId).query();
             for (Song_list_song item:songListSongs) {
-                songs.add(item.getSong());
+                Song song = helper.getSongStringDao().queryForId(item.getSong().getSongId());
+                songs.add(song);
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -538,6 +544,55 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             mp.resolve("fail");
         }
         mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void getrecommendSongList(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<SongList> songLists = new ArrayList<>();
+
+        try {//联表查询，只返回管理员创建的，且名称不是%喜欢的音乐%
+            QueryBuilder songListBuilder = helper.getSongListStringDao().queryBuilder();
+            QueryBuilder userBuilder = helper.getUserListStringDao().queryBuilder();
+
+            Where songlistWhere = songListBuilder.where();
+            songlistWhere.not().like("songListTitle","%喜欢的音乐%");
+
+            Where userWhere = userBuilder.where();
+            userWhere.eq("role","1");
+
+            QueryBuilder resultBuilder = songListBuilder.join(userBuilder);
+
+            songLists = resultBuilder.query();
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(songLists));
+    }
+
+    @ReactMethod
+    public void getRankings(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Ranking> rankings = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            rankings = helper.getRankingStringDao().queryForAll();
+            for (Ranking ranking:rankings){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("ranking",ranking);
+                List<Ranking_item> ranking_items = helper.getRankingItemStringDao().queryBuilder().orderBy("hot",false).where().eq("rankingid",ranking.getRankingId()).query();
+                jsonObject.put("items",ranking_items);
+                jsonArray.add(jsonObject);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(jsonArray));
     }
 
 }

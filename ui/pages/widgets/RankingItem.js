@@ -22,7 +22,7 @@ class RankingItem extends PureComponent {
                     <View style={styles.rightPart}>
                         {data.song.map((item,index)=>{
                             return (index>2?null:(
-                                <Text>{(index+1)+'.'+item}</Text>
+                                <Text>{(index+1)+'.'+item.song.songName}</Text>
                             ))
                         })}
                         {/*<Text>{data.song[0]}</Text>*/}

@@ -42,7 +42,9 @@ class DiscoveryMusic extends Component {
         super();
         this.state = {
             keyword:'',
-            searchShow:false
+            searchShow:false,
+            songLists:[],
+            Rankings:[]
         };
     }
     // static navigationOptions = {
@@ -53,6 +55,29 @@ class DiscoveryMusic extends Component {
     // changeStore(){
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
+
+    componentWillMount(): void {
+        this.getrecommendSongList();
+        this.getRankings();
+    }
+
+    getrecommendSongList(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getrecommendSongList().then((result)=>{
+            this.setState({
+                songLists:JSON.parse(result)
+            })
+        })
+    }
+
+    getRankings(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getRankings().then((result)=>{
+            this.setState({
+                Rankings:JSON.parse(result)
+            })
+        })
+    }
 
     wrapClick(){
         if (this.state.searchShow){
@@ -122,48 +147,82 @@ class DiscoveryMusic extends Component {
 
 
                         <View style={styles.songListWrap}>
-                            <SongList
-                                title={'雅俗共赏'}
-                                subTitle={'快写一首情歌雅俗共赏'}
-                                picUrl={randomImg()}
-                                rowNum={3}
-                                item={{playCount:100000000}}
-                            />
-                            <SongList
-                                title={'雅俗共赏'}
-                                subTitle={'快写一首情歌雅俗共赏'}
-                                picUrl={randomImg()}
-                                rowNum={3}
-                                item={{playCount:100000000}}
-                            />
-                            <SongList
-                                title={'雅俗共赏'}
-                                subTitle={'快写一首情歌雅俗共赏'}
-                                picUrl={randomImg()}
-                                rowNum={3}
-                                item={{playCount:100000000}}
-                            />
-                            <SongList
-                                title={'雅俗共赏'}
-                                subTitle={'快写一首情歌雅俗共赏'}
-                                picUrl={randomImg()}
-                                rowNum={3}
-                                item={{playCount:100000000}}
-                            />
-                            <SongList
-                                title={'雅俗共赏'}
-                                subTitle={'快写一首情歌雅俗共赏'}
-                                picUrl={randomImg()}
-                                rowNum={3}
-                                item={{playCount:100000000}}
-                            />
+
+                            {this.state.songLists.length===0?(
+                                <Text>这里，空空的</Text>
+                            ):null}
+
+                            {
+                                this.state.songLists.map((item,index)=>{
+                                    return (
+                                        <SongList
+                                            title={item.songListTitle}
+                                            subTitle={item.songListIntro}
+                                            picUrl={item.songListCover}
+                                            rowNum={3}
+                                            item={{playCount:100000}}
+                                            onPress={()=>{
+                                                this.props.navigation.navigate('SongListDetail',{
+                                                    SonglistId:item.songListId
+                                                });
+                                            }}
+                                        />
+                                    )
+                                })
+                            }
+
+                            {/*<SongList*/}
+                            {/*    title={'雅俗共赏'}*/}
+                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
+                            {/*    picUrl={randomImg()}*/}
+                            {/*    rowNum={3}*/}
+                            {/*    item={{playCount:100000000}}*/}
+                            {/*/>*/}
+                            {/*<SongList*/}
+                            {/*    title={'雅俗共赏'}*/}
+                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
+                            {/*    picUrl={randomImg()}*/}
+                            {/*    rowNum={3}*/}
+                            {/*    item={{playCount:100000000}}*/}
+                            {/*/>*/}
+                            {/*<SongList*/}
+                            {/*    title={'雅俗共赏'}*/}
+                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
+                            {/*    picUrl={randomImg()}*/}
+                            {/*    rowNum={3}*/}
+                            {/*    item={{playCount:100000000}}*/}
+                            {/*/>*/}
+                            {/*<SongList*/}
+                            {/*    title={'雅俗共赏'}*/}
+                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
+                            {/*    picUrl={randomImg()}*/}
+                            {/*    rowNum={3}*/}
+                            {/*    item={{playCount:100000000}}*/}
+                            {/*/>*/}
+                            {/*<SongList*/}
+                            {/*    title={'雅俗共赏'}*/}
+                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
+                            {/*    picUrl={randomImg()}*/}
+                            {/*    rowNum={3}*/}
+                            {/*    item={{playCount:100000000}}*/}
+                            {/*/>*/}
                         </View>
 
                         <Subheading style={{marginLeft:5,marginTop:10}}>排行榜</Subheading>
 
-                        <RankingItem
-                            ItemData={{cover:randomImg(),intro:'hdcdce',song:["vcgvcs","cdhgsvchg","cshgcvhg"]}}
-                        />
+                        {/*<Text>{JSON.stringify(this.state.Rankings)}</Text>*/}
+
+                        {this.state.Rankings.map((item,index)=>{
+                            return (
+                                <RankingItem
+                                    ItemData={{cover:item.items[0].song.songCover,intro:item.ranking.rankingName,song:item.items}}
+                                />
+                            )
+                        })}
+
+                        {/*<RankingItem*/}
+                        {/*    ItemData={{cover:randomImg(),intro:'hdcdce',song:["vcgvcs","cdhgsvchg","cshgcvhg"]}}*/}
+                        {/*/>*/}
 
                     </ScrollView>
                 </View>

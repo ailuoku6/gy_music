@@ -1,12 +1,13 @@
 import * as React from 'react';
-import {View, StyleSheet, NativeModules,ToastAndroid,FlatList,Image} from 'react-native';
-import { Searchbar, Appbar, Subheading, TouchableRipple,Text,FAB} from 'react-native-paper';
+import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Image, Alert} from 'react-native';
+import {Searchbar, Appbar, Subheading, TouchableRipple, Text, FAB, Dialog, Portal} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
 import SongItem from './widgets/SongItem'
 import { screen } from './utils';
 import judgeValue from './utils/judgeValue';
+import AddSongList from './Component/AddSongList';
 
 class SongListDetail extends React.Component {
     state = {
@@ -36,6 +37,11 @@ class SongListDetail extends React.Component {
     getSongs(songlistId){
         const DataBaseModule = NativeModules.DataBaseModule;
         DataBaseModule.getSongByListId(songlistId).then((result)=>{
+            // let songlistSongs = JSON.parse(result);
+            // let songs = [];
+            // songlistSongs.map((item,index)=>{
+            //     songs[songs.length] = item.song
+            // });
             this.setState({
                 songs:JSON.parse(result)
             })
@@ -76,7 +82,7 @@ class SongListDetail extends React.Component {
                 {/*    }}*/}
                 {/*/>*/}
 
-                <Text>{JSON.stringify(this.state.SongList)}</Text>
+                <Text>{JSON.stringify(this.state.songs)}</Text>
 
                 {this.state.SongList&&this.state.SongList.songListCover?(
                     <View>
@@ -108,31 +114,6 @@ class SongListDetail extends React.Component {
                         />)}
                 />
 
-                {/*{*/}
-                {/*    this.state.songlist.map((item,index)=>{*/}
-                {/*        return (*/}
-                {/*            <SongItem*/}
-                {/*                ItemData={item}*/}
-                {/*                onMoreClick={*/}
-                {/*                    ()=>{*/}
-
-                {/*                    }*/}
-                {/*                }*/}
-                {/*                onPress={()=>{*/}
-
-                {/*                }}*/}
-                {/*            ></SongItem>*/}
-                {/*        )*/}
-                {/*    })*/}
-                {/*}*/}
-
-                {/*<FAB*/}
-                {/*    style={styles.fab}*/}
-                {/*    icon="plus"*/}
-                {/*    onPress={() => {*/}
-                {/*        */}
-                {/*    }}*/}
-                {/*/>*/}
             </View>
         );
     }
