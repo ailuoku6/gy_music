@@ -133,7 +133,15 @@ class SearchPage extends React.Component {
                                     <Text>添加到歌单</Text>
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-
+                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
+                                    let songid = this.state.selectSong.songId;
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    })
+                                    this.props.navigation.navigate('Comment',{
+                                        songId:songid
+                                    });
                                 }}>
                                     <Text>评论</Text>
                                 </TouchableRipple>

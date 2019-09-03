@@ -13,7 +13,9 @@ class SongListDetail extends React.Component {
     state = {
         SonglistId:'',
         SongList:'',
-        songs:[]
+        songs:[],
+        selectSong:null,
+        MoreVisible:false
     };
 
     static navigationOptions = {
@@ -82,7 +84,7 @@ class SongListDetail extends React.Component {
                 {/*    }}*/}
                 {/*/>*/}
 
-                <Text>{JSON.stringify(this.state.songs)}</Text>
+                {/*<Text>{JSON.stringify(this.state.songs)}</Text>*/}
 
                 {this.state.SongList&&this.state.SongList.songListCover?(
                     <View>
@@ -105,7 +107,10 @@ class SongListDetail extends React.Component {
                         <SongItem
                             ItemData={item}
                             onMoreClick={()=>{
-
+                                this.setState({
+                                    MoreVisible:true,
+                                    selectSong:item
+                                })
                             }}
                             onPress={()=>{
 
@@ -113,6 +118,46 @@ class SongListDetail extends React.Component {
 
                         />)}
                 />
+
+                <Portal>
+                    {this.state.MoreVisible?(
+                        <Dialog
+                            visible={this.state.MoreVisible}
+                            onDismiss={()=>{
+                                this.setState({
+                                    MoreVisible:false,
+                                    selectSong:null
+                                    // selectSong:null
+                                })
+                            }}>
+                            <Dialog.Content>
+                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                    // this.setState({
+                                    //     AddListVisible:true,
+                                    //     MoreVisible:false,
+                                    // })
+                                    const DataBaseModule = NativeModules.DataBaseModule;
+                                    DataBaseModule.deleteSongFromList(JSON.stringify(this.state.selectSong),this.state.SonglistId).then((result)=>{
+                                        if (result==='fail'){
+                                            ToastAndroid.show("删除失败",ToastAndroid.SHORT);
+                                        } else if (result==='succ'){
+                                            ToastAndroid.show("删除成功",ToastAndroid.SHORT);
+                                        }
+
+                                        this.setState({
+                                            MoreVisible:false,
+                                            selectSong:null
+                                        });
+
+                                        this.getSongs(this.state.SonglistId);
+                                    })
+                                }}>
+                                    <Text>从歌单中删除</Text>
+                                </TouchableRipple>
+                            </Dialog.Content>
+                        </Dialog>
+                    ):null}
+                </Portal>
 
             </View>
         );

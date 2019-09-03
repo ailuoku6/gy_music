@@ -4,10 +4,12 @@ package com.gy_music.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.sql.Date;
+import java.util.Date;
 
 @DatabaseTable(tableName = "Comment")
 public class Comment {
+    @DatabaseField(columnName = "CommentId",id = true)
+    private String CommentId;
     @DatabaseField(columnName = "userid",foreign = true,foreignColumnName = "userId")
     private User user;
     @DatabaseField(columnName = "targetId")
@@ -18,6 +20,10 @@ public class Comment {
     private String commentText;
     @DatabaseField(columnName = "commentDate")
     private Date commentDate;
+
+    public String getCommentId() {
+        return CommentId;
+    }
 
     public User getUser() {
         return user;
@@ -37,6 +43,10 @@ public class Comment {
 
     public Date getCommentDate() {
         return commentDate;
+    }
+
+    public void setCommentId(String commentId) {
+        CommentId = commentId;
     }
 
     public void setUser(User user) {
@@ -62,7 +72,8 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(User user, String targetId, int targetType, String commentText, Date commentDate) {
+    public Comment(String commentId, User user, String targetId, int targetType, String commentText, Date commentDate) {
+        CommentId = commentId;
         this.user = user;
         this.targetId = targetId;
         this.targetType = targetType;

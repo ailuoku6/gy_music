@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.gy_music.db.DatabaseHelper;
 import com.gy_music.entity.Album;
+import com.gy_music.entity.Comment;
 import com.gy_music.entity.Ranking;
 import com.gy_music.entity.Ranking_item;
 import com.gy_music.entity.Singer;
@@ -593,6 +594,80 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             mp.resolve("fail");
         }
         mp.resolve(JSON.toJSONString(jsonArray));
+    }
+
+    @ReactMethod
+    public void getCommentByid(String id,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Comment> comments = new ArrayList<>();
+        try {
+            comments = helper.getCommentStringDao().queryBuilder().orderBy("commentDate",false).where().eq("targetId",id).query();
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(comments));
+    }
+
+    @ReactMethod
+    public void getSongById(String id,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        Song song = null;
+        try {
+            song  = helper.getSongStringDao().queryForId(id);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(song));
+    }
+
+    @ReactMethod
+    public void sendComment(String userId,String targetId,Integer targetType,String commentText,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        Date commentDate = new Date();
+        User user = null;
+        try {
+            user = helper.getUserListStringDao().queryForId(userId);
+            if (user!=null){
+                Comment comment = new Comment(UUID_g.randomUUID(),user,targetId,targetType,commentText,commentDate);
+                helper.getCommentStringDao().create(comment);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void deleteComment(String id,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            helper.getCommentStringDao().deleteById(id);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void deleteSongFromList(String songinfo,String songlistId,Promise promise){
+        Promise mp = promise;
+        Song song = JSON.parseObject(songinfo,Song.class);
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            helper.getSongListSongStringDao().deleteBuilder().where().eq("songid",song.getSongId()).and().eq("songlistId",songlistId).query();
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve("succ");
     }
 
 }
