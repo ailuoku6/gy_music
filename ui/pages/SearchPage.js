@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Alert, ScrollView} from 'react-native';
 import {Searchbar, Appbar, Subheading, TouchableRipple, Text, Dialog, Portal} from 'react-native-paper';
 import { connect } from 'react-redux'
-import { setSongList } from '../redux/actions'
+import { setSongList,setCurrentIndex,setIsPlaying } from '../redux/actions'
 
 import SongItem from './widgets/SongItem'
 import judgeValue from './utils/judgeValue';
@@ -115,7 +115,11 @@ class SearchPage extends React.Component {
                                 })
                             }}
                             onPress={()=>{
-
+                                let songlist = this.props.list;
+                                songlist[songlist.length] = item;
+                                this.props.dispatch(setIsPlaying(true));
+                                this.props.dispatch(setSongList(songlist));
+                                this.props.dispatch(setCurrentIndex(songlist.length-1))
                             }}
 
                         />)}

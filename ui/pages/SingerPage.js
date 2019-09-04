@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Image, Alert, ScrollView} from 'react-native';
 import {Searchbar, Appbar, Subheading, TouchableRipple, Text, FAB, Dialog, Portal} from 'react-native-paper';
 import { connect } from 'react-redux'
-import { setSongList } from '../redux/actions'
+import {setCurrentIndex, setIsPlaying, setSongList} from '../redux/actions';
 
 import SongItem from './widgets/SongItem'
 import { screen } from './utils';
@@ -136,7 +136,11 @@ class SingerPage extends React.Component {
                                 })
                             }}
                             onPress={()=>{
-
+                                let songlist = this.state.songs;
+                                // songlist[songlist.length] = item;
+                                this.props.dispatch(setIsPlaying(true));
+                                this.props.dispatch(setSongList(songlist));
+                                this.props.dispatch(setCurrentIndex(index))
                             }}
 
                         />)}

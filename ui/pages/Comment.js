@@ -81,7 +81,7 @@ class Comment extends React.Component {
                     {/*    }}*/}
                     {/*/>*/}
 
-                    <Text>{JSON.stringify(this.state.comments[0])}</Text>
+                    {/*<Text>{JSON.stringify(this.state.comments[0])}</Text>*/}
 
                     <FlatList
                         data={this.state.comments}

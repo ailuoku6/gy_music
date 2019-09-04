@@ -12,12 +12,14 @@ const currentPlay = (state = {}, action) => {
     }
 };
 
-const playList = (state = {},action)=>{
+const playList = (state = {list:[],index:-1,isPlaying:false},action)=>{
     switch (action.type) {
         case TYPE.SET_SONG_LIST:
             return {...state,list:action.list};
         case TYPE.SET_CURRENT_INDEX:
-            return {...state,index:action.index}
+            return {...state,index:action.index};
+        case TYPE.SET_ISPLAYING:
+            return {...state,isPlaying:action.isPlaying}
         default:
             return {...state};
     }

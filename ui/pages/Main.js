@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { View ,StyleSheet } from 'react-native'
-import { BottomNavigation, Text ,FAB} from 'react-native-paper';
+import { View ,StyleSheet,Image } from 'react-native'
+import { BottomNavigation, Text ,FAB,TouchableRipple,Surface} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
 import Account from './Component/Account'
 import DiscoveryMusic from './Component/DiscoveryMusic'
 import MyMusic from './Component/MyMusic'
+import randomImg from './utils/config';
 
 // const DiscoveryMusicRoute = () => <DiscoveryMusic/>;
 //
@@ -36,27 +37,19 @@ class Main extends React.Component {
         // alert(JSON.stringify(this.props))
         return (
             <View style={{width:'100%',height:'100%'}}>
-                <View style={styles.fab}>
-
-                </View>
                 <BottomNavigation
                     navigationState={this.state}
                     onIndexChange={this._handleIndexChange}
                     renderScene={this._renderScene}
                 />
+
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        marginBottom:70,
-        right: 0,
-        bottom: 0,
-    },
+
 });
 
 
