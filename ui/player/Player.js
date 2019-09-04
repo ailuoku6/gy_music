@@ -72,7 +72,7 @@ class Player extends Component {
                     onEnd={()=>{
                         // alert("播放完成")
                         this.props.dispatch(setIsPlaying(false));
-                        if (this.props.list.length!=0){
+                        if (this.props.list.length!==0){
                             this.props.dispatch(setCurrentIndex((this.props.index+1)%this.props.list.length));
                             this.props.dispatch(setIsPlaying(true));
                         }

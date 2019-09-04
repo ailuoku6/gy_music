@@ -14,7 +14,9 @@ import {
     View,
     Alert,
     Image,
-    ToastAndroid
+    ToastAndroid,
+    Animated,
+    Easing
 } from 'react-native';
 
 import Video from 'react-native-video';
@@ -39,6 +41,7 @@ import { setSongList,setIsPlaying } from '../redux/actions'
 class PlayerFab extends Component {
     constructor() {
         super();
+        this.spinValue = new Animated.Value(0)
         this.state = {
             musicUrl:'https://nav.ailuoku6.top/yasugs.mp3'
         };
@@ -48,9 +51,35 @@ class PlayerFab extends Component {
     //     header:null,
     // };
 
+    componentDidMount(){
+        this.spin();
+    }
+    //旋转方法
+    spin = () => {
+        this.spinValue.setValue(0);
+        Animated.timing(this.spinValue,{
+            toValue: 1, // 最终值 为1，这里表示最大旋转 360度
+            duration: 10000,
+            easing: Easing.linear
+        }).start(() => this.spin())
+    };
+
     render() {
 
         let musicUrl = this.state.musicUrl;
+
+        //映射 0-1的值 映射 成 0 - 360 度
+        const spin = this.spinValue.interpolate({
+            inputRange: [0, 1],//输入值
+            outputRange: ['0deg', '360deg'] //输出值
+        });
+
+        let imgstyles = [];
+        imgstyles[imgstyles.length] = styles.ImageStyle;
+
+        if (this.props.isPlaying) {
+            imgstyles[imgstyles.length] = {transform:[{rotate: spin }]}
+        }
 
         return (
             <View>
@@ -66,14 +95,14 @@ class PlayerFab extends Component {
                         }}>
                             <View style={{height:'100%',width:'100%',alignItems: 'center',justifyContent: 'center'}}>
                                 {this.props.list.length>0&&this.props.index>=0&&this.props.index<this.props.list.length?(
-                                    <Image
+                                    <Animated.Image
                                         source={{uri:this.props.list[this.props.index].songCover}}
-                                        style={{height:'100%',width:'100%',position: 'absolute',borderRadius:35}}
+                                        style={imgstyles}
                                     />
                                 ):(
                                     <Image
                                         source={require('../assets/default_Cover.png')}
-                                        style={{height:'100%',width:'100%',position: 'absolute',borderRadius:35}}
+                                        style={styles.ImageStyle}
                                     />
                                 )}
                                 {this.props.isPlaying?(
@@ -109,6 +138,12 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center'
     },
+    ImageStyle:{
+        height:'100%',
+        width:'100%',
+        position: 'absolute',
+        borderRadius:35
+    }
 });
 
 export default connect(mapStateToProps)(PlayerFab);
