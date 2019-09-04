@@ -42,8 +42,30 @@ class SingerPage extends React.Component {
             SingerId:SingerId
         });
 
+        this.getSingerById(SingerId);
+        this.getSongsBySingerId(SingerId)
         this.getMysongLists();
 
+    }
+
+    getSingerById(singerid){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getSingerById(singerid).then((result)=>{
+            // alert(result)
+            this.setState({
+                Singer:JSON.parse(result)
+            })
+        })
+    }
+
+    getSongsBySingerId(singerid){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getSongsBySingerId(singerid).then((result)=>{
+            // alert(result)
+            this.setState({
+                songs:JSON.parse(result)
+            })
+        })
     }
 
     getMysongLists(){
@@ -81,12 +103,15 @@ class SingerPage extends React.Component {
                 {/*    }}*/}
                 {/*/>*/}
 
-                {/*<Text>{JSON.stringify(this.state.songs)}</Text>*/}
+                {/*<Text>{JSON.stringify(this.state.Singer)}</Text>*/}
 
-                {this.state.SongList&&this.state.SongList.songListCover?(
+                {this.state.Singer&&this.state.Singer.singerAvatar?(
                     <View>
-                        <Image source={{uri:this.state.SongList.songListCover}} style={{width:'100%',height:300}}/>
-                        <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.SongList.songListIntro}</Text>
+                        <Image source={{uri:this.state.Singer.singerAvatar}} style={{width:'100%',height:300}}/>
+                        <View style={{position: 'absolute',bottom: 0,left: 0,margin: 10}}>
+                            <Text style={{color:'#ffffff'}}>{'姓名：'+this.state.Singer.singerName}</Text>
+                            <Text style={{color:'#ffffff'}}>{'简介：'+this.state.Singer.singerIntro}</Text>
+                        </View>
                     </View>
                 ):null}
 
@@ -139,12 +164,29 @@ class SingerPage extends React.Component {
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
                                     // ToastAndroid.show("run here",ToastAndroid.SHORT)
+                                    // alert(JSON.stringify(this.state.selectSong.album))
+                                    let Album = this.state.selectSong.album;
+
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    });
+                                    this.props.navigation.navigate('AlbumPage',{
+                                        Album:Album
+                                    });
                                 }}>
                                     <Text>{'专辑:  '+this.state.selectSong.album.albumName}</Text>
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
-
+                                    // alert(JSON.stringify(this.state.selectSong.album))
+                                    let singerId = this.state.selectSong.album.singer.singerId;
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    });
+                                    this.props.navigation.navigate('SingerPage',{
+                                        SingerId:singerId
+                                    });
                                 }}>
                                     <Text>{'歌手:  '+this.state.selectSong.album.singer.singerName}</Text>
                                 </TouchableRipple>

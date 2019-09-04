@@ -742,7 +742,7 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         try {
             singer_songs = helper.getSingerSongStringDao().queryBuilder().where().eq("singerid",singerId).query();
             for (Singer_song singer_song:singer_songs){
-                songs.add(singer_song.getSong());
+                songs.add(helper.getSongStringDao().queryForId(singer_song.getSong().getSongId()));
             }
         }catch (SQLException e){
             e.printStackTrace();

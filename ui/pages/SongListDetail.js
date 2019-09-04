@@ -188,12 +188,29 @@ class SongListDetail extends React.Component {
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
                                     // ToastAndroid.show("run here",ToastAndroid.SHORT)
+                                    // alert(JSON.stringify(this.state.selectSong.album))
+                                    let Album = this.state.selectSong.album;
+
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    });
+                                    this.props.navigation.navigate('AlbumPage',{
+                                        Album:Album
+                                    });
                                 }}>
                                     <Text>{'专辑:  '+this.state.selectSong.album.albumName}</Text>
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
-
+                                    // alert(JSON.stringify(this.state.selectSong.album))
+                                    let singerId = this.state.selectSong.album.singer.singerId;
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    });
+                                    this.props.navigation.navigate('SingerPage',{
+                                        SingerId:singerId
+                                    });
                                 }}>
                                     <Text>{'歌手:  '+this.state.selectSong.album.singer.singerName}</Text>
                                 </TouchableRipple>

@@ -210,7 +210,7 @@ class DiscoveryMusic extends Component {
 
                         <Subheading style={{marginLeft:5,marginTop:10}}>排行榜</Subheading>
 
-                        <Text>{JSON.stringify(this.state.Rankings[0])}</Text>
+                        {/*<Text>{JSON.stringify(this.state.Rankings[0])}</Text>*/}
 
                         {this.state.Rankings.map((item,index)=>{
                             return (

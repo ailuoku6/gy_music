@@ -36,11 +36,13 @@ class AlbumPage extends React.Component {
 
     componentWillMount(): void {
 
-        let SingerId = this.props.navigation.state.params.SingerId;
+        let Album = this.props.navigation.state.params.Album;
 
         this.setState({
-            SingerId:SingerId
+            Album:Album
         });
+
+        this.getSongsByAlbumId(Album.albumId);
 
         this.getMysongLists();
 
@@ -52,6 +54,16 @@ class AlbumPage extends React.Component {
             // alert(result)
             this.setState({
                 mySonglists:JSON.parse(result)
+            })
+        })
+    }
+
+    getSongsByAlbumId(albumId){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getSongsByAlbumId(albumId).then((result)=>{
+            // alert(result)
+            this.setState({
+                songs:JSON.parse(result)
             })
         })
     }
@@ -81,12 +93,15 @@ class AlbumPage extends React.Component {
                 {/*    }}*/}
                 {/*/>*/}
 
-                {/*<Text>{JSON.stringify(this.state.songs)}</Text>*/}
+                {/*<Text>{JSON.stringify(this.state.Album)}</Text>*/}
 
-                {this.state.SongList&&this.state.SongList.songListCover?(
+                {this.state.Album&&this.state.Album.albumCover?(
                     <View>
-                        <Image source={{uri:this.state.SongList.songListCover}} style={{width:'100%',height:300}}/>
-                        <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.SongList.songListIntro}</Text>
+                        <Image source={{uri:this.state.Album.albumCover}} style={{width:'100%',height:300}}/>
+                        <View style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>
+                            <Text style={{color:'#ffffff'}}>{"专辑名称:  "+this.state.Album.albumName}</Text>
+                            <Text style={{color:'#ffffff'}}>{"专辑简介:  "+this.state.Album.albumIntro}</Text>
+                        </View>
                     </View>
                 ):null}
 
@@ -139,12 +154,29 @@ class AlbumPage extends React.Component {
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
                                     // ToastAndroid.show("run here",ToastAndroid.SHORT)
+                                    // alert(JSON.stringify(this.state.selectSong.album))
+                                    let Album = this.state.selectSong.album;
+
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    });
+                                    this.props.navigation.navigate('AlbumPage',{
+                                        Album:Album
+                                    });
                                 }}>
                                     <Text>{'专辑:  '+this.state.selectSong.album.albumName}</Text>
                                 </TouchableRipple>
                                 <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
-
+                                    // alert(JSON.stringify(this.state.selectSong.album))
+                                    let singerId = this.state.selectSong.album.singer.singerId;
+                                    this.setState({
+                                        MoreVisible:false,
+                                        selectSong:null
+                                    });
+                                    this.props.navigation.navigate('SingerPage',{
+                                        SingerId:singerId
+                                    });
                                 }}>
                                     <Text>{'歌手:  '+this.state.selectSong.album.singer.singerName}</Text>
                                 </TouchableRipple>
