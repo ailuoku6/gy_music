@@ -79,6 +79,8 @@ class PlayerFab extends Component {
 
         if (this.props.isPlaying) {
             imgstyles[imgstyles.length] = {transform:[{rotate: spin }]}
+        }else {
+            imgstyles[imgstyles.length] = {transform:[{rotate: spin.__getValue() }]}
         }
 
         return (
