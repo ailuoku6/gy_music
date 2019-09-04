@@ -20,9 +20,17 @@ class AdminView extends React.Component {
     };
 
     static navigationOptions = {
-        // title: 'Home',
-        header:null,
+        title: '管理员页面',
+        headerStyle: {
+            backgroundColor: '#3685f4',
+        },
+        headerTintColor: '#fff',
     };
+
+    // static navigationOptions = {
+    //     // title: 'Home',
+    //     header:null,
+    // };
 
     componentWillMount(): void {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {

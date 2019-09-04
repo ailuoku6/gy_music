@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Image, Alert, ScrollView} from 'react-native';
+import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Image, Alert,ScrollView} from 'react-native';
 import {Searchbar, Appbar, Subheading, TouchableRipple, Text, FAB, Dialog, Portal} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
@@ -10,10 +10,10 @@ import judgeValue from './utils/judgeValue';
 import AddSongList from './Component/AddSongList';
 import MySonglist from './widgets/MySonglist';
 
-class SongListDetail extends React.Component {
+class RankingDetail extends React.Component {
     state = {
-        SonglistId:'',
-        SongList:'',
+        RankingId:'',
+        Ranking:null,
         songs:[],
         selectSong:null,
         MoreVisible:false,
@@ -22,7 +22,7 @@ class SongListDetail extends React.Component {
     };
 
     static navigationOptions = {
-        title: '歌单详情',
+        title: '排行榜详情',
         headerStyle: {
             backgroundColor: '#3685f4',
         },
@@ -36,41 +36,62 @@ class SongListDetail extends React.Component {
 
     componentWillMount(): void {
 
-        let SonglistId = this.props.navigation.state.params.SonglistId;
+        let Ranking = this.props.navigation.state.params.Ranking;
+
+        let RankingId = Ranking.rankingId;
+
+        let items = this.props.navigation.state.params.songs;
+
+        // navigationOptions.title = Ranking.rankingName
 
         this.setState({
-            SonglistId:SonglistId
+            RankingId:RankingId,
+            Ranking:Ranking
         });
-        this.getSongs(SonglistId);
-
-        this.getSongList(SonglistId);
-
+        this.getSongs(items);
+        // this.getRankingById(RankingId)
         this.getMysongLists();
 
     }
 
-    getSongs(songlistId){
-        const DataBaseModule = NativeModules.DataBaseModule;
-        DataBaseModule.getSongByListId(songlistId).then((result)=>{
-            // let songlistSongs = JSON.parse(result);
-            // let songs = [];
-            // songlistSongs.map((item,index)=>{
-            //     songs[songs.length] = item.song
-            // });
-            this.setState({
-                songs:JSON.parse(result)
-            })
+    getSongs(items){
+        let songs = [];
+        items.map((item,index)=>{
+            songs[songs.length] = item.song;
+        });
+        this.setState({
+            songs:songs
         })
+        // const DataBaseModule = NativeModules.DataBaseModule;
+        // DataBaseModule.getSongByListId(RankingId).then((result)=>{
+        //     // let songlistSongs = JSON.parse(result);
+        //     // let songs = [];
+        //     // songlistSongs.map((item,index)=>{
+        //     //     songs[songs.length] = item.song
+        //     // });
+        //     this.setState({
+        //         songs:JSON.parse(result)
+        //     })
+        // })
     }
 
-    getSongList(songlistId){
-        const DataBaseModule = NativeModules.DataBaseModule;
-        DataBaseModule.getSongListById(songlistId).then((result)=>{
-            this.setState({
-                SongList:JSON.parse(result)
-            })
-        })
-    }
+    // getRankingById(RankingId){
+    //     const DataBaseModule = NativeModules.DataBaseModule;
+    //     DataBaseModule.getRankingById(RankingId).then((result)=>{
+    //         this.setState({
+    //             Ranking:JSON.parse(result)
+    //         })
+    //     })
+    // }
+
+    // getSongList(songlistId){
+    //     const DataBaseModule = NativeModules.DataBaseModule;
+    //     DataBaseModule.getSongListById(songlistId).then((result)=>{
+    //         this.setState({
+    //             SongList:JSON.parse(result)
+    //         })
+    //     })
+    // }
 
     getMysongLists(){
         const DataBaseModule = NativeModules.DataBaseModule;
@@ -109,10 +130,10 @@ class SongListDetail extends React.Component {
 
                 {/*<Text>{JSON.stringify(this.state.songs)}</Text>*/}
 
-                {this.state.SongList&&this.state.SongList.songListCover?(
+                {this.state.songs&&this.state.songs[0].songCover?(
                     <View>
-                        <Image source={{uri:this.state.SongList.songListCover}} style={{width:'100%',height:300}}/>
-                        <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.SongList.songListIntro}</Text>
+                        <Image source={{uri:this.state.songs[0].songCover}} style={{width:'100%',height:300}}/>
+                        <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.Ranking.rankingName}</Text>
                     </View>
                 ):null}
 
@@ -129,13 +150,13 @@ class SongListDetail extends React.Component {
                     renderItem={({item,index})=>(
                         <SongItem
                             ItemData={item}
-                            index={index}
                             onMoreClick={()=>{
                                 this.setState({
                                     MoreVisible:true,
                                     selectSong:item
                                 })
                             }}
+                            index={index}
                             onPress={()=>{
 
                             }}
@@ -155,61 +176,42 @@ class SongListDetail extends React.Component {
                                 })
                             }}>
                             <Dialog.Content>
-                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // this.setState({
-                                    //     AddListVisible:true,
-                                    //     MoreVisible:false,
-                                    // })
-                                    const DataBaseModule = NativeModules.DataBaseModule;
-                                    DataBaseModule.deleteSongFromList(JSON.stringify(this.state.selectSong),this.state.SonglistId).then((result)=>{
-                                        if (result==='fail'){
-                                            ToastAndroid.show("删除失败",ToastAndroid.SHORT);
-                                        } else if (result==='succ'){
-                                            ToastAndroid.show("删除成功",ToastAndroid.SHORT);
-                                        }
 
+                                <ScrollView>
+                                    <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                        this.setState({
+                                            AddListVisible:true,
+                                            MoreVisible:false,
+                                        })
+                                    }}>
+                                        <Text>添加到歌单</Text>
+                                    </TouchableRipple>
+                                    <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                        // ToastAndroid.show("run here",ToastAndroid.SHORT)
+                                    }}>
+                                        <Text>{'专辑:  '+this.state.selectSong.album.albumName}</Text>
+                                    </TouchableRipple>
+                                    <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                        // ToastAndroid.show("run here",ToastAndroid.SHORT)
+
+                                    }}>
+                                        <Text>{'歌手:  '+this.state.selectSong.album.singer.singerName}</Text>
+                                    </TouchableRipple>
+                                    <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
+                                        // ToastAndroid.show("run here",ToastAndroid.SHORT)
+                                        let songid = this.state.selectSong.songId;
                                         this.setState({
                                             MoreVisible:false,
                                             selectSong:null
+                                        })
+                                        this.props.navigation.navigate('Comment',{
+                                            songId:songid
                                         });
+                                    }}>
+                                        <Text>评论</Text>
+                                    </TouchableRipple>
+                                </ScrollView>
 
-                                        this.getSongs(this.state.SonglistId);
-                                    })
-                                }}>
-                                    <Text>从歌单中删除</Text>
-                                </TouchableRipple>
-                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    this.setState({
-                                        AddListVisible:true,
-                                        MoreVisible:false,
-                                    })
-                                }}>
-                                    <Text>添加到歌单</Text>
-                                </TouchableRipple>
-                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
-                                }}>
-                                    <Text>{'专辑:  '+this.state.selectSong.album.albumName}</Text>
-                                </TouchableRipple>
-                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
-
-                                }}>
-                                    <Text>{'歌手:  '+this.state.selectSong.album.singer.singerName}</Text>
-                                </TouchableRipple>
-                                <TouchableRipple style={{height:50,justifyContent:'center'}} onPress={()=>{
-                                    // ToastAndroid.show("run here",ToastAndroid.SHORT)
-                                    let songid = this.state.selectSong.songId;
-                                    this.setState({
-                                        MoreVisible:false,
-                                        selectSong:null
-                                    })
-                                    this.props.navigation.navigate('Comment',{
-                                        songId:songid
-                                    });
-                                }}>
-                                    <Text>评论</Text>
-                                </TouchableRipple>
                             </Dialog.Content>
                         </Dialog>
                     ):null}
@@ -273,4 +275,4 @@ const mapStateToProps = ({playList,UserInfo}) => ({
     userInfo:UserInfo.userInfo
 });
 
-export default connect(mapStateToProps)(SongListDetail);
+export default connect(mapStateToProps)(RankingDetail);

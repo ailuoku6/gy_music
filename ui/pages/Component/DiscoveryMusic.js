@@ -210,19 +210,21 @@ class DiscoveryMusic extends Component {
 
                         <Subheading style={{marginLeft:5,marginTop:10}}>排行榜</Subheading>
 
-                        {/*<Text>{JSON.stringify(this.state.Rankings)}</Text>*/}
+                        <Text>{JSON.stringify(this.state.Rankings[0])}</Text>
 
                         {this.state.Rankings.map((item,index)=>{
                             return (
                                 <RankingItem
                                     ItemData={{cover:item.items[0].song.songCover,intro:item.ranking.rankingName,song:item.items}}
+                                    onPress={()=>{
+                                        this.props.navigation.navigate('RankingDetail',{
+                                            songs:item.items,
+                                            Ranking:item.ranking,
+                                        });
+                                    }}
                                 />
                             )
                         })}
-
-                        {/*<RankingItem*/}
-                        {/*    ItemData={{cover:randomImg(),intro:'hdcdce',song:["vcgvcs","cdhgsvchg","cshgcvhg"]}}*/}
-                        {/*/>*/}
 
                     </ScrollView>
                 </View>

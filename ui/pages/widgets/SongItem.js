@@ -32,8 +32,16 @@ class SongItem extends PureComponent {
         return (
             <TouchableOpacity style={[styles.container, this.props.style]} onPress={this.props.onPress}>
                 <View style={styles.leftPart}>
-                    <TextTool.H2 color={'#5281ff'}>{data.songName}</TextTool.H2>
-                    <TextTool.Normal>{data.album.singer.singerName+"-"+data.songName}</TextTool.Normal>
+                    {this.props.index||this.props.index===0?(
+                        <View style={{justifyContent:'center',width:35}}>
+                            <Text>{this.props.index+1+""}</Text>
+                        </View>
+                    ):null}
+
+                    <View style={{justifyContent:'space-around'}}>
+                        <TextTool.H2 color={'#5281ff'}>{data.songName}</TextTool.H2>
+                        <TextTool.Normal>{data.album.singer.singerName+"-"+data.songName}</TextTool.Normal>
+                    </View>
                 </View>
                 <TouchableRipple style={styles.rightPart} onPress={this.props.onMoreClick}>
                         <Image source={require('../../assets/more.png')} style={{width:20,height:20}}></Image>
@@ -54,7 +62,9 @@ const styles = StyleSheet.create({
     leftPart:{
         width: '90%',
         // backgroundColor:'#fff000',
-        justifyContent:'space-around',
+        // justifyContent:'space-around',
+        flexDirection:'row',
+        // justifyContent:'center',
         padding: 8,
     },
     rightPart:{

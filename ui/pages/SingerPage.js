@@ -1,26 +1,28 @@
 import * as React from 'react';
-import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Alert, ScrollView} from 'react-native';
-import {Searchbar, Appbar, Subheading, TouchableRipple, Text, Dialog, Portal} from 'react-native-paper';
+import {View, StyleSheet, NativeModules, ToastAndroid, FlatList, Image, Alert, ScrollView} from 'react-native';
+import {Searchbar, Appbar, Subheading, TouchableRipple, Text, FAB, Dialog, Portal} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
 import SongItem from './widgets/SongItem'
+import { screen } from './utils';
 import judgeValue from './utils/judgeValue';
 import AddSongList from './Component/AddSongList';
 import MySonglist from './widgets/MySonglist';
 
-class SearchPage extends React.Component {
+class SingerPage extends React.Component {
     state = {
-        keyword:'',
-        songlist:[],
+        SingerId:'',
+        Singer:null,
+        songs:[],
+        selectSong:null,
         MoreVisible:false,
         AddListVisible:false,
-        selectSong:null,
         mySonglists:[]
     };
 
     static navigationOptions = {
-        title: '搜索结果',
+        title: '歌手详情',
         headerStyle: {
             backgroundColor: '#3685f4',
         },
@@ -34,14 +36,14 @@ class SearchPage extends React.Component {
 
     componentWillMount(): void {
 
-        let keyword = this.props.navigation.state.params.keyword;
+        let SingerId = this.props.navigation.state.params.SingerId;
 
         this.setState({
-            keyword:keyword
-        },()=>{
-            this.doSearch()
+            SingerId:SingerId
         });
+
         this.getMysongLists();
+
     }
 
     getMysongLists(){
@@ -54,23 +56,10 @@ class SearchPage extends React.Component {
         })
     }
 
-    doSearch(){
-        if (!judgeValue(this.state.keyword)){
-            ToastAndroid.show("关键字不能为空",ToastAndroid.SHORT);
-            return;
-        }
-        const DataBaseModule = NativeModules.DataBaseModule;
-        DataBaseModule.searchSong(this.state.keyword).then((result)=>{
-            this.setState({
-                songlist:JSON.parse(result)
-            })
-        })
-    }
-
     render() {
         // alert(JSON.stringify(this.props))
 
-        let keyword = this.state.keyword;
+        // let keyword = this.state.keyword;
         // let data = {songName:'雅俗共赏',singer:'许嵩'}
 
         // let songs = [];
@@ -83,31 +72,38 @@ class SearchPage extends React.Component {
 
         return (
             <View style={{width:'100%',height:'100%'}}>
-                <Searchbar
-                    placeholder="搜索歌名"
-                    onChangeText={query => { this.setState({ keyword: query}); }}
-                    value={keyword}
-                    ref={'searchbar'}
-                    onSubmitEditing={()=>{
-                        this.doSearch();
-                    }}
-                />
+                {/*<Searchbar*/}
+                {/*    placeholder="搜索歌名"*/}
+                {/*    onChangeText={query => { this.setState({ keyword: query}); }}*/}
+                {/*    value={keyword}*/}
+                {/*    ref={'searchbar'}*/}
+                {/*    onSubmitEditing={()=>{*/}
+                {/*    }}*/}
+                {/*/>*/}
 
-                {/*<Text>{JSON.stringify(this.state)}</Text>*/}
+                {/*<Text>{JSON.stringify(this.state.songs)}</Text>*/}
+
+                {this.state.SongList&&this.state.SongList.songListCover?(
+                    <View>
+                        <Image source={{uri:this.state.SongList.songListCover}} style={{width:'100%',height:300}}/>
+                        <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.SongList.songListIntro}</Text>
+                    </View>
+                ):null}
 
                 {
-                    this.state.songlist.length===0?(
-                        <Text>无数据</Text>
+                    this.state.songs.length===0?(
+                        <Text>这里，空空如也</Text>
                     ):null
                 }
 
                 <FlatList
-                    data={this.state.songlist}
+                    data={this.state.songs}
                     extraData={this.state}
                     keyExtractor={(item,index)=>item}
-                    renderItem={({item})=>(
+                    renderItem={({item,index})=>(
                         <SongItem
                             ItemData={item}
+                            index={index}
                             onMoreClick={()=>{
                                 this.setState({
                                     MoreVisible:true,
@@ -128,6 +124,7 @@ class SearchPage extends React.Component {
                             onDismiss={()=>{
                                 this.setState({
                                     MoreVisible:false,
+                                    selectSong:null
                                     // selectSong:null
                                 })
                             }}>
@@ -202,38 +199,21 @@ class SearchPage extends React.Component {
                     ):null}
                 </Portal>
 
-                {/*{*/}
-                {/*    this.state.songlist.map((item,index)=>{*/}
-                {/*        return (*/}
-                {/*            <SongItem*/}
-                {/*                ItemData={item}*/}
-                {/*                onMoreClick={*/}
-                {/*                    ()=>{*/}
-
-                {/*                    }*/}
-                {/*                }*/}
-                {/*                onPress={()=>{*/}
-
-                {/*                }}*/}
-                {/*            ></SongItem>*/}
-                {/*        )*/}
-                {/*    })*/}
-                {/*}*/}
-                {/*<SongItem*/}
-                {/*    ItemData={data}*/}
-                {/*    onMoreClick={*/}
-                {/*        ()=>{*/}
-
-                {/*        }*/}
-                {/*    }*/}
-                {/*></SongItem>*/}
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-
+    fab: {
+        position: 'absolute',
+        margin: 30,
+        marginLeft:180,
+        marginRight:180,
+        right: 0,
+        left:0,
+        bottom: 0,
+    },
 });
 
 
@@ -244,4 +224,4 @@ const mapStateToProps = ({playList,UserInfo}) => ({
     userInfo:UserInfo.userInfo
 });
 
-export default connect(mapStateToProps)(SearchPage);
+export default connect(mapStateToProps)(SingerPage);

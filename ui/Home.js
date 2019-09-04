@@ -23,7 +23,10 @@ import Main from './pages/Main'
 import SearchPage from './pages/SearchPage'
 import AdminView from './pages/AdminView'
 import SongListDetail from './pages/SongListDetail'
+import RankingDetail from './pages/RankingDetail'
 import Comment from './pages/Comment'
+import SingerPage from './pages/SingerPage'
+import AlbumPage from './pages/AlbumPage'
 
 import { connect } from 'react-redux'
 import { setSongList } from './redux/actions'
@@ -104,7 +107,10 @@ const AppNavigator = createStackNavigator(
         SearchPage:SearchPage,
         AdminView:AdminView,
         SongListDetail:SongListDetail,
-        Comment:Comment
+        Comment:Comment,
+        RankingDetail:RankingDetail,
+        SingerPage:SingerPage,
+        AlbumPage:AlbumPage
     },
     {
         initialRouteName: 'Home'

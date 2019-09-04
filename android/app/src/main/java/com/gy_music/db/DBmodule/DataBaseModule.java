@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.annotation.Nonnull;
 
@@ -586,6 +587,17 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("ranking",ranking);
                 List<Ranking_item> ranking_items = helper.getRankingItemStringDao().queryBuilder().orderBy("hot",false).where().eq("rankingid",ranking.getRankingId()).query();
+                ListIterator<Ranking_item> it = ranking_items.listIterator();
+
+                while (it.hasNext()){
+                    Ranking_item rankingItem = it.next();
+                    Singer singer = helper.getSingerStringDao().queryForId(rankingItem.getSong().getAlbum().getSinger().getSingerId());
+                    rankingItem.getSong().getAlbum().setSinger(singer);
+                }
+//                for (Ranking_item rankingItem:ranking_items){
+//                    Singer singer = helper.getSingerStringDao().queryForId(rankingItem.getSong().getAlbum().getSinger().getSingerId());
+//                    rankingItem.getSong().getAlbum().setSinger(singer);
+//                }
                 jsonObject.put("items",ranking_items);
                 jsonArray.add(jsonObject);
             }
@@ -662,12 +674,95 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
         Song song = JSON.parseObject(songinfo,Song.class);
         DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
         try {
-            helper.getSongListSongStringDao().deleteBuilder().where().eq("songid",song.getSongId()).and().eq("songlistId",songlistId).query();
+            Song_list_song song_list_song = helper.getSongListSongStringDao().queryBuilder().where().eq("songid",song.getSongId()).and().eq("songlistId",songlistId).queryForFirst();
+            helper.getSongListSongStringDao().delete(song_list_song);
         }catch (SQLException e){
             e.printStackTrace();
             mp.resolve("fail");
         }
         mp.resolve("succ");
+    }
+
+    @ReactMethod
+    public void getRankingById(String rankingId,Promise promise){
+        Promise mp = promise;
+        Ranking ranking = null;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            ranking = helper.getRankingStringDao().queryForId(rankingId);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        if (ranking==null){
+            mp.resolve("fail");
+        }else {
+            mp.resolve(JSON.toJSONString(ranking));
+        }
+    }
+
+    @ReactMethod
+    public void getSingerById(String id,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        Singer singer = null;
+        try {
+            singer = helper.getSingerStringDao().queryForId(id);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        if (singer==null)
+            mp.resolve("fail");
+        else mp.resolve(JSON.toJSONString(singer));
+    }
+
+    @ReactMethod
+    public void getAlbumById(String id,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        Album album = null;
+        try {
+            album = helper.getAlbumStringDao().queryForId(id);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        if (album==null)
+            mp.resolve("fail");
+        else mp.resolve(JSON.toJSONString(album));
+    }
+
+    @ReactMethod
+    public void getSongsBySingerId(String singerId,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Song> songs = new ArrayList<>();
+        List<Singer_song> singer_songs = new ArrayList<>();
+        try {
+            singer_songs = helper.getSingerSongStringDao().queryBuilder().where().eq("singerid",singerId).query();
+            for (Singer_song singer_song:singer_songs){
+                songs.add(singer_song.getSong());
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(songs));
+    }
+
+    @ReactMethod
+    public void getSongsByAlbumId(String albumId,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        List<Song> songs = new ArrayList<>();
+        try {
+            songs = helper.getSongStringDao().queryBuilder().where().eq("ownAlbumId",albumId).query();
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(songs));
     }
 
 }
