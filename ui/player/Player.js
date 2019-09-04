@@ -73,7 +73,8 @@ class Player extends Component {
                         // alert("播放完成")
                         this.props.dispatch(setIsPlaying(false));
                         if (this.props.list.length!=0){
-                            this.props.dispatch(setCurrentIndex((this.props.index+1)%this.props.list.length))
+                            this.props.dispatch(setCurrentIndex((this.props.index+1)%this.props.list.length));
+                            this.props.dispatch(setIsPlaying(true));
                         }
                     }}                      // Callback when playback finishes
                     // onError={this.videoError}               // Callback when video cannot be loaded

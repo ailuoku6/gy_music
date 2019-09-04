@@ -14,7 +14,7 @@ import AddRankingitem from './Component/AddRankingitem'
 
 class AdminView extends React.Component {
     state = {
-        optionList:["添加歌手","添加专辑","添加歌曲","创建歌单","添加歌曲到歌单","添加排行榜","添加歌曲到排行榜"],
+        optionList:["添加歌手","添加专辑","添加歌曲","创建歌单","添加歌曲到歌单","添加排行榜","添加歌曲到排行榜","下架歌曲","下架专辑"],
         modalVisible:false,
         selectIndex:-1
     };
