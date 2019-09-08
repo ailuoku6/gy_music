@@ -73,7 +73,6 @@ class Login extends Component {
         DataBaseModule.Signup(this.state.userName,this.state.passWord,this.state.checked).then((result)=>{
             ToastAndroid.show(result,ToastAndroid.SHORT);
             this.props.dispatch(setuserInfo(JSON.parse(result)))
-
         });
     }
 

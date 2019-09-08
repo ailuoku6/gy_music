@@ -66,6 +66,12 @@ class DiscoveryMusic extends Component {
         this.getRankings();
     }
 
+    componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any): void {
+        // ToastAndroid.show(JSON.stringify(nextProps))
+        this.getrecommendSongList();
+        this.getRankings();
+    }
+
     getrecommendSongList(){
         const DataBaseModule = NativeModules.DataBaseModule;
         DataBaseModule.getrecommendSongList().then((result)=>{
@@ -102,6 +108,8 @@ class DiscoveryMusic extends Component {
     render() {
 
         const { keyword } = this.state;
+
+        // alert(this.props.unikey)
 
         return (
             <TouchableRipple onPress={()=>{
@@ -165,6 +173,7 @@ class DiscoveryMusic extends Component {
                                 this.state.songLists.map((item,index)=>{
                                     return (
                                         <SongList
+                                            key={JSON.stringify(item)}
                                             title={item.songListTitle}
                                             subTitle={item.songListIntro}
                                             picUrl={item.songListCover}
@@ -180,41 +189,6 @@ class DiscoveryMusic extends Component {
                                 })
                             }
 
-                            {/*<SongList*/}
-                            {/*    title={'雅俗共赏'}*/}
-                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
-                            {/*    picUrl={randomImg()}*/}
-                            {/*    rowNum={3}*/}
-                            {/*    item={{playCount:100000000}}*/}
-                            {/*/>*/}
-                            {/*<SongList*/}
-                            {/*    title={'雅俗共赏'}*/}
-                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
-                            {/*    picUrl={randomImg()}*/}
-                            {/*    rowNum={3}*/}
-                            {/*    item={{playCount:100000000}}*/}
-                            {/*/>*/}
-                            {/*<SongList*/}
-                            {/*    title={'雅俗共赏'}*/}
-                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
-                            {/*    picUrl={randomImg()}*/}
-                            {/*    rowNum={3}*/}
-                            {/*    item={{playCount:100000000}}*/}
-                            {/*/>*/}
-                            {/*<SongList*/}
-                            {/*    title={'雅俗共赏'}*/}
-                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
-                            {/*    picUrl={randomImg()}*/}
-                            {/*    rowNum={3}*/}
-                            {/*    item={{playCount:100000000}}*/}
-                            {/*/>*/}
-                            {/*<SongList*/}
-                            {/*    title={'雅俗共赏'}*/}
-                            {/*    subTitle={'快写一首情歌雅俗共赏'}*/}
-                            {/*    picUrl={randomImg()}*/}
-                            {/*    rowNum={3}*/}
-                            {/*    item={{playCount:100000000}}*/}
-                            {/*/>*/}
                         </View>
 
                         <Subheading style={{marginLeft:5,marginTop:10}}>排行榜</Subheading>
@@ -224,6 +198,7 @@ class DiscoveryMusic extends Component {
                         {this.state.Rankings.map((item,index)=>{
                             return (
                                 <RankingItem
+                                    key={JSON.stringify(item)}
                                     ItemData={{cover:item.items[0].song.songCover,intro:item.ranking.rankingName,song:item.items}}
                                     onPress={()=>{
                                         this.props.navigation.navigate('RankingDetail',{
@@ -259,10 +234,11 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = ({playList}) => ({
+const mapStateToProps = ({playList,Unikey}) => ({
     list: playList.list,
     index:playList.index,
-    playList
+    playList,
+    unikey:Unikey.unikey
 });
 
 export default connect(mapStateToProps)(DiscoveryMusic);

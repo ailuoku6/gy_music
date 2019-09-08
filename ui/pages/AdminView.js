@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {View, StyleSheet, ScrollView, Alert, ToastAndroid, BackHandler, NativeModules} from 'react-native';
-import { Searchbar, Appbar,Button,Portal,Dialog} from 'react-native-paper';
+import {View, StyleSheet, ScrollView, Alert, ToastAndroid, BackHandler, NativeModules,DeviceEventEmitter} from 'react-native';
+import { Searchbar, Appbar,Button,Portal,Dialog,ActivityIndicator, Colors} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
 
@@ -11,12 +11,15 @@ import AddSongList from './Component/AddSongList'
 import AddSonglistSong from './Component/AddSonglistSong'
 import AddRanking from './Component/AddRanking'
 import AddRankingitem from './Component/AddRankingitem'
+import DownAlbum from './Component/DownAlbum'
+import DownSong from './Component/DownSong'
 
 class AdminView extends React.Component {
     state = {
         optionList:["添加歌手","添加专辑","添加歌曲","创建歌单","添加歌曲到歌单","添加排行榜","添加歌曲到排行榜","下架歌曲","下架专辑"],
         modalVisible:false,
-        selectIndex:-1
+        selectIndex:-1,
+        spiderRunning:false
     };
 
     static navigationOptions = {
@@ -32,7 +35,21 @@ class AdminView extends React.Component {
     //     header:null,
     // };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+    //         // ToastAndroid.show("backclick",ToastAndroid.SHORT)
+    //         if (this.state.modalVisible){
+    //             this.setState({
+    //                 modalVisible:false,
+    //                 selectIndex:-1
+    //             });
+    //             return true;
+    //         }
+    //         return false;
+    //     });
+    // }
+
+    componentDidMount(): void {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             // ToastAndroid.show("backclick",ToastAndroid.SHORT)
             if (this.state.modalVisible){
@@ -44,10 +61,25 @@ class AdminView extends React.Component {
             }
             return false;
         });
+        this.updataListener = DeviceEventEmitter.addListener('updataProcess', (e: Event) => {
+            // handle event.
+            if (e['msg']=='succ'){
+                ToastAndroid.show('爬取成功!',ToastAndroid.SHORT)
+                // this.setState({
+                //     upLoadingVisible:false,
+                // })
+            }else{
+                ToastAndroid.show("爬取失败",ToastAndroid.SHORT)
+            }
+            this.setState({
+                spiderRunning:false
+            })
+        });
     }
 
     componentWillUnmount() {
         this.backHandler.remove();
+        this.updataListener.remove();
     }
 
     render() {
@@ -59,23 +91,41 @@ class AdminView extends React.Component {
                     <View style={styles.ButtonWrap}>
                         {this.state.optionList.map((item,index)=>{
                             return(
-                                <Button onPress={()=>{
-                                    this.setState({
-                                        modalVisible:true,
-                                        selectIndex:index
-                                    })
-                                }} style={{margin:15}} mode={'contained'}>{item}</Button>
+                                <Button
+                                    key={JSON.stringify(item)}
+                                    onPress={()=>{
+                                        this.setState({
+                                            modalVisible:true,
+                                            selectIndex:index
+                                        })
+                                    }}
+                                    style={{margin:15}}
+                                    mode={'contained'}>
+
+                                    {item}
+                                </Button>
                             )
                         })}
                         <Button onPress={()=>{
                             const DataBaseModule = NativeModules.DataBaseModule;
-                            DataBaseModule.Singerspider().then((result)=>{
-                                if (result==='succ'){
-                                    ToastAndroid.show("成功",ToastAndroid.SHORT)
-                                } else if (result==='fail'){
-                                    ToastAndroid.show("失败",ToastAndroid.SHORT)
-                                }
-                            })
+                            this.setState({
+                                spiderRunning:true
+                            },()=>{
+                                DataBaseModule.Singerspider().then((result)=>{
+                                    // if (result==='succ'){
+                                    //     ToastAndroid.show("成功",ToastAndroid.SHORT)
+                                    // } else if (result==='fail'){
+                                    //     ToastAndroid.show("失败",ToastAndroid.SHORT)
+                                    // }
+                                })
+                            });
+                            // DataBaseModule.Singerspider().then((result)=>{
+                            //     // if (result==='succ'){
+                            //     //     ToastAndroid.show("成功",ToastAndroid.SHORT)
+                            //     // } else if (result==='fail'){
+                            //     //     ToastAndroid.show("失败",ToastAndroid.SHORT)
+                            //     // }
+                            // })
                         }} style={{margin:15}} mode={'contained'}>{'自动爬取'}</Button>
                     </View>
                 </ScrollView>
@@ -98,9 +148,26 @@ class AdminView extends React.Component {
                                 {this.state.selectIndex===4?(<AddSonglistSong/>):null}
                                 {this.state.selectIndex===5?(<AddRanking/>):null}
                                 {this.state.selectIndex===6?(<AddRankingitem/>):null}
+                                {this.state.selectIndex===7?(<DownSong/>):null}
+                                {this.state.selectIndex===8?(<DownAlbum/>):null}
                             </Dialog.Content>
                         </Dialog>
                     ):null}
+                    <Dialog
+                        visible={this.state.spiderRunning}
+                        onDismiss={()=>{
+                            // this.setState({
+                            //     spiderRunning:false
+                            // })
+                        }}>
+                        <Dialog.Title>
+                            爬取中...
+                        </Dialog.Title>
+                        <Dialog.Content>
+                            {/*<Paragraph>This is simple dialog</Paragraph>*/}
+                            <ActivityIndicator animating={true} color={Colors.red800} />
+                        </Dialog.Content>
+                    </Dialog>
                 </Portal>
             </View>
         );

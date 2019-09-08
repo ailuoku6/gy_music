@@ -34,8 +34,18 @@ const UserInfo = (state = {userInfo:null},action)=>{
     }
 };
 
+const Unikey = (state = {unikey:'0.5'},action)=>{
+    switch (action.type) {
+        case TYPE.SET_UNIKEY:
+            return {...state,unikey:action.unikey};
+        default:
+            return {...state}
+    }
+};
+
 export default combineReducers({
     currentPlay,
     playList,
-    UserInfo
+    UserInfo,
+    Unikey
 })

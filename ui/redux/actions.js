@@ -4,7 +4,8 @@ export const TYPE = {
     SET_SONG_LIST:'SET_SONG_LIST',
     SET_CURRENT_INDEX:'SET_CURRENT_INDEX',
     SET_USERINFO:'SET_USERINFO',
-    SET_ISPLAYING:'SET_ISPLAYING'
+    SET_ISPLAYING:'SET_ISPLAYING',
+    SET_UNIKEY:'SET_UNIKEY'
 };
 
 // 设置播放歌曲id
@@ -34,5 +35,10 @@ export const setuserInfo = userInfo=>({
 export const setIsPlaying = isPlaying=>({
     type:TYPE.SET_ISPLAYING,
     isPlaying
+});
+
+export const setUnikey = unikey=>({
+    type:TYPE.SET_UNIKEY,
+    unikey
 });
 

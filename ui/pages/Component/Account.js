@@ -133,7 +133,16 @@ class Account extends Component {
                             null,
                             [
                                 {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                                {text: '确认', onPress: () => this.props.dispatch(setuserInfo(null))},
+                                {text: '确认', onPress: () => {
+                                        const DataBaseModule = NativeModules.DataBaseModule;
+                                        DataBaseModule.exitLog().then((result)=>{
+                                            if (result==='fail'){
+                                                ToastAndroid.show("操作失败，请重试",ToastAndroid.SHORT);
+                                            } else if (result==='succ') {
+                                                this.props.dispatch(setuserInfo(null));
+                                            }
+                                        });
+                                    }},
                             ],
                             { cancelable: true }
                         )

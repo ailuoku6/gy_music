@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View ,StyleSheet,Image } from 'react-native'
+import { View ,StyleSheet,Image,ToastAndroid } from 'react-native'
 import { BottomNavigation, Text ,FAB,TouchableRipple,Surface} from 'react-native-paper';
 import { connect } from 'react-redux'
-import { setSongList } from '../redux/actions'
+import {setIsPlaying, setSongList, setUnikey} from '../redux/actions';
 
 import Account from './Component/Account'
 import DiscoveryMusic from './Component/DiscoveryMusic'
@@ -25,7 +25,11 @@ class Main extends React.Component {
         ],
     };
 
-    _handleIndexChange = index => this.setState({ index });
+    _handleIndexChange = index => {
+        this.setState({ index });
+        this.props.dispatch(setUnikey(Math.random().toString()));
+        // alert(JSON.stringify(this.refs.bottomNavigat.props.renderScene))
+    };
 
     _renderScene = BottomNavigation.SceneMap({
         discovery_music: ()=><DiscoveryMusic navigation={this.props.navigation}/>,
@@ -33,13 +37,40 @@ class Main extends React.Component {
         account: ()=><Account navigation={this.props.navigation}/>,
     });
 
+    // _renderScene = ({route}) => BottomNavigation.SceneMap({
+    //     discovery_music: ()=><DiscoveryMusic unikey={Math.random().toString()} navigation={this.props.navigation}/>,
+    //     my_music: ()=><MyMusic navigation={this.props.navigation}/>,
+    //     account: ()=><Account navigation={this.props.navigation}/>,
+    // });
+
+    // _renderScene = ({ route }) => {
+    //     // if (this.state.routes[this.state.index].key !== route.key) {
+    //     //     return null;
+    //     // }else {
+    //     //     // switch () {
+    //     //     //
+    //     //     // }
+    //     //
+    //     // }
+    //     switch (this.state.index) {
+    //         case 0:
+    //             return <DiscoveryMusic navigation={this.props.navigation}/>;
+    //         case 1:
+    //             return <MyMusic navigation={this.props.navigation}/>;
+    //         case 2:
+    //             return <Account navigation={this.props.navigation}/>;
+    //     }
+    // };
+
     render() {
         // alert(JSON.stringify(this.props))
         return (
             <View style={{width:'100%',height:'100%'}}>
                 <BottomNavigation
+                    ref={'bottomNavigat'}
                     navigationState={this.state}
                     onIndexChange={this._handleIndexChange}
+                    // renderScene={this._renderScene}
                     renderScene={this._renderScene}
                 />
 
@@ -53,10 +84,11 @@ const styles = StyleSheet.create({
 });
 
 
-const mapStateToProps = ({playList}) => ({
+const mapStateToProps = ({playList,Unikey}) => ({
     list: playList.list,
     index:playList.index,
-    playList
+    playList,
+    unikey:Unikey.unikey
 });
 
 export default connect(mapStateToProps)(Main);

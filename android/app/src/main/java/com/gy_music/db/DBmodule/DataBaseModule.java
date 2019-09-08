@@ -2,15 +2,20 @@ package com.gy_music.db.DBmodule;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.gy_music.db.DatabaseHelper;
 import com.gy_music.entity.Album;
 import com.gy_music.entity.Comment;
@@ -29,6 +34,7 @@ import com.gy_music.utils.Md5util;
 import com.gy_music.utils.RandomImg;
 import com.gy_music.utils.UUID_g;
 import com.gy_music.utils.config;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 
@@ -41,6 +47,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class DataBaseModule extends ReactContextBaseJavaModule {
 
@@ -119,6 +126,32 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             }
         }
     }
+
+    @ReactMethod
+    public void getUserinfo(Promise promise){
+        Promise mp = promise;
+        SharedPreferences sp = mContext.getSharedPreferences("user", Context .MODE_PRIVATE);
+        String userinfo =sp.getString("userInfo","");
+        if (!"".equals(userinfo)){
+            mp.resolve(userinfo);
+        }else {
+            mp.resolve("fail");
+        }
+    }
+
+    @ReactMethod
+    public void exitLog(Promise promise){
+        Promise mp = promise;
+        SharedPreferences sp = mContext.getSharedPreferences("user",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
+        if (editor.commit()){
+            mp.resolve("succ");
+        }else {
+            mp.resolve("fail");
+        }
+    }
+
     @ReactMethod
     public void getSongList(Promise promise){
         Promise mp = promise;
@@ -323,6 +356,86 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
         }
         mp.resolve(JSON.toJSONString(songs));
+    }
+
+    @ReactMethod
+    public void DownSong(String songid,Promise promise){//下架歌曲
+        Promise mp = promise;
+//        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+//        try {
+//            DeleteBuilder commentbuild  = helper.getCommentStringDao().deleteBuilder();
+//            commentbuild.where().eq("targetId",songid);
+//            commentbuild.delete();
+//
+//            DeleteBuilder rankingItembulder = helper.getRankingItemStringDao().deleteBuilder();
+//            rankingItembulder.where().eq("rankingSongid",songid);
+//            rankingItembulder.delete();
+//
+//            DeleteBuilder singerSongbuilder = helper.getSingerSongStringDao().deleteBuilder();
+//            singerSongbuilder.where().eq("songid",songid);
+//            singerSongbuilder.delete();
+//
+//            DeleteBuilder songListSong = helper.getSongListSongStringDao().deleteBuilder();
+//            songListSong.where().eq("songid",songid);
+//            songListSong.delete();
+//
+//            helper.getSongStringDao().deleteById(songid);
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//            mp.resolve("fail");
+//        }
+        boolean result = DownSongById(songid);
+        if (result){
+            mp.resolve("succ");
+        }else {
+            mp.resolve("fail");
+        }
+
+    }
+
+    public boolean DownSongById(String songid){
+//        boolean result = false;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            DeleteBuilder commentbuild  = helper.getCommentStringDao().deleteBuilder();
+            commentbuild.where().eq("targetId",songid);
+            commentbuild.delete();
+
+            DeleteBuilder rankingItembulder = helper.getRankingItemStringDao().deleteBuilder();
+            rankingItembulder.where().eq("rankingSongid",songid);
+            rankingItembulder.delete();
+
+            DeleteBuilder singerSongbuilder = helper.getSingerSongStringDao().deleteBuilder();
+            singerSongbuilder.where().eq("songid",songid);
+            singerSongbuilder.delete();
+
+            DeleteBuilder songListSong = helper.getSongListSongStringDao().deleteBuilder();
+            songListSong.where().eq("songid",songid);
+            songListSong.delete();
+
+            helper.getSongStringDao().deleteById(songid);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return  false;
+        }
+        return  true;
+    }
+
+    @ReactMethod
+    public void DownAlbum(String albumId,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            List<Song> songs = helper.getSongStringDao().queryBuilder().where().eq("ownAlbumId",albumId).query();
+            for (Song song:songs){
+                DownSongById(song.getSongId());
+            }
+            helper.getAlbumStringDao().deleteById(albumId);
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve("succ");
     }
 
     @ReactMethod
@@ -791,29 +904,98 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void Singerspider(Promise promise){
         Promise mp = promise;
-        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
-        try {
-            List<Singer> singers = new SingerSpider().excuTask();
-            for (Singer singer:singers){
-                helper.getSingerStringDao().createOrUpdate(singer);
+//        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+//        try {
+//            List<Singer> singers = new SingerSpider().excuTask();
+//            for (Singer singer:singers){
+//                helper.getSingerStringDao().createOrUpdate(singer);
+//            }
+//            List<Album> albums = new AlbumSpider().excuTask(singers);
+//            for (Album album:albums){
+//                helper.getAlbumStringDao().createOrUpdate(album);
+//            }
+//            new SongSpider().excuTask(albums,mContext);
+//
+////            for (Song song:songs){
+////                helper.getSongStringDao().createOrUpdate(song);
+////            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            mp.resolve("fail");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+
+        new SpiderTask().execute("");
+
+        mp.resolve("succ");
+    }
+
+    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
+
+    public class SpiderTask extends AsyncTask<String, Integer, String>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            for (Integer value:values){
+                if (value==400){
+                    WritableMap params = Arguments.createMap();
+                    params.putString("msg","fail");
+                    sendEvent(mContext,"updataProcess",params);
+                }else if (value==100){
+                    WritableMap params = Arguments.createMap();
+                    params.putString("msg","succ");
+                    sendEvent(mContext,"updataProcess",params);
+                }
+                break;
             }
-            List<Album> albums = new AlbumSpider().excuTask(singers);
-            for (Album album:albums){
-                helper.getAlbumStringDao().createOrUpdate(album);
-            }
-            new SongSpider().excuTask(albums,mContext);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+            try {
+                List<Singer> singers = new SingerSpider().excuTask();
+                for (Singer singer:singers){
+                    helper.getSingerStringDao().createOrUpdate(singer);
+                }
+                List<Album> albums = new AlbumSpider().excuTask(singers);
+                for (Album album:albums){
+                    helper.getAlbumStringDao().createOrUpdate(album);
+                }
+                new SongSpider().excuTask(albums,mContext);
 
 //            for (Song song:songs){
 //                helper.getSongStringDao().createOrUpdate(song);
 //            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            mp.resolve("fail");
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+                publishProgress(400);
+//                mp.resolve("fail");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                publishProgress(400);//400代表失败，100代表成功
+            }
+            publishProgress(100);
+            return null;
         }
-        mp.resolve("succ");
     }
 
 }

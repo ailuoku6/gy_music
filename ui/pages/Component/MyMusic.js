@@ -66,6 +66,10 @@ class MyMusic extends Component {
         this.getMysongLists();
     }
 
+    componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any): void {
+        this.getMysongLists();
+    }
+
     componentWillUnmount() {
     }
 
@@ -152,6 +156,7 @@ class MyMusic extends Component {
                         this.state.mySonglists.map((item,index)=>{
                             return (
                                 <MySonglist
+                                    key={JSON.stringify(item)}
                                     ItemData={item}
                                     onPress={()=>{
                                         this.props.navigation.navigate('SongListDetail',{
@@ -282,11 +287,12 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = ({playList,UserInfo}) => ({
+const mapStateToProps = ({playList,UserInfo,Unikey}) => ({
     list: playList.list,
     index:playList.index,
     playList,
-    userInfo:UserInfo.userInfo
+    userInfo:UserInfo.userInfo,
+    unikey:Unikey.unikey
 });
 
 export default connect(mapStateToProps)(MyMusic);

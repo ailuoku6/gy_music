@@ -29,7 +29,7 @@ import SingerPage from './pages/SingerPage'
 import AlbumPage from './pages/AlbumPage'
 
 import { connect } from 'react-redux'
-import { setSongList } from './redux/actions'
+import {setSongList, setuserInfo} from './redux/actions';
 
 //import TestFlatListSelect from "../components/Test";
 
@@ -57,7 +57,18 @@ class Home extends Component {
                 //ToastAndroid.show("willfocus"+payload,ToastAndroid.SHORT);
             }
         );
+        this.getUserinfo();
     }
+
+    getUserinfo(){
+        const DataBaseModule = NativeModules.DataBaseModule;
+        DataBaseModule.getUserinfo().then((result)=>{
+            if (result!=='fail'){
+                this.props.dispatch(setuserInfo(JSON.parse(result)))
+            }
+        })
+    }
+
     componentWillUnmount() {
         this.willFocusSubscription.remove();
     }

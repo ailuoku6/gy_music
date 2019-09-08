@@ -56,7 +56,7 @@ class SongList extends PureComponent {
                     {
                         item.playCount && (
                             <View style={styles.tipText} >
-                                <Icon name="ios-volume-down-outline" color="#ffffff" size={16} />
+                                <Icon name="md-volume-low" color="#ffffff" size={16} />
                                 <Small title={calculateCount(item.playCount)} style={{color: '#ffffff'}} />
                             </View>
                         )

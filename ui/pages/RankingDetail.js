@@ -148,7 +148,7 @@ class RankingDetail extends React.Component {
 
                 {/*<Text>{JSON.stringify(this.state.songs)}</Text>*/}
 
-                {this.state.songs&&this.state.songs[0].songCover?(
+                {this.state.songs.length!=0&&this.state.songs[0].songCover?(
                     <View>
                         <Image source={{uri:this.state.songs[0].songCover}} style={{width:'100%',height:300}}/>
                         <Text style={{position: 'absolute',bottom: 0,left: 0,margin: 10,color:'#ffffff'}}>{this.state.Ranking.rankingName}</Text>
