@@ -28,7 +28,14 @@ class Comment extends React.Component {
         headerTintColor: '#fff',
     };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     let songid = this.props.navigation.state.params.songId;
+    //     // alert(songid)
+    //     this.getCommentByid(songid);
+    //     this.getSongById(songid);
+    // }
+
+    componentDidMount(): void {
         let songid = this.props.navigation.state.params.songId;
         // alert(songid)
         this.getCommentByid(songid);

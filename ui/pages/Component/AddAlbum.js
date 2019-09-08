@@ -59,7 +59,11 @@ class AddAlbum extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     this.getAllSinger();
+    // }
+
+    componentDidMount(): void {
         this.getAllSinger();
     }
 

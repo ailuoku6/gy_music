@@ -32,8 +32,19 @@ class SearchPage extends React.Component {
     //     header:null,
     // };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //
+    //     let keyword = this.props.navigation.state.params.keyword;
+    //
+    //     this.setState({
+    //         keyword:keyword
+    //     },()=>{
+    //         this.doSearch()
+    //     });
+    //     this.getMysongLists();
+    // }
 
+    componentDidMount(): void {
         let keyword = this.props.navigation.state.params.keyword;
 
         this.setState({
@@ -104,7 +115,7 @@ class SearchPage extends React.Component {
                 <FlatList
                     data={this.state.songlist}
                     extraData={this.state}
-                    keyExtractor={(item,index)=>item}
+                    keyExtractor={(item,index)=>JSON.stringify(item)}
                     renderItem={({item})=>(
                         <SongItem
                             ItemData={item}

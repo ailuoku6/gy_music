@@ -59,7 +59,13 @@ class AddSonglistSong extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     // this.getSongLists();
+    //     this.getRankings();
+    //     this.getSongs();
+    // }
+
+    componentDidMount(): void {
         // this.getSongLists();
         this.getRankings();
         this.getSongs();

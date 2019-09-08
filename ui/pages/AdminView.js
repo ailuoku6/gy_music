@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View ,StyleSheet,ScrollView,Alert,ToastAndroid,BackHandler } from 'react-native'
+import {View, StyleSheet, ScrollView, Alert, ToastAndroid, BackHandler, NativeModules} from 'react-native';
 import { Searchbar, Appbar,Button,Portal,Dialog} from 'react-native-paper';
 import { connect } from 'react-redux'
 import { setSongList } from '../redux/actions'
@@ -67,6 +67,16 @@ class AdminView extends React.Component {
                                 }} style={{margin:15}} mode={'contained'}>{item}</Button>
                             )
                         })}
+                        <Button onPress={()=>{
+                            const DataBaseModule = NativeModules.DataBaseModule;
+                            DataBaseModule.Singerspider().then((result)=>{
+                                if (result==='succ'){
+                                    ToastAndroid.show("成功",ToastAndroid.SHORT)
+                                } else if (result==='fail'){
+                                    ToastAndroid.show("失败",ToastAndroid.SHORT)
+                                }
+                            })
+                        }} style={{margin:15}} mode={'contained'}>{'自动爬取'}</Button>
                     </View>
                 </ScrollView>
 

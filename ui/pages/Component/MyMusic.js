@@ -14,7 +14,7 @@ import {
     View,
     ToastAndroid,
     BackHandler,
-    NativeModules, ScrollView, Alert,
+    NativeModules, ScrollView, Alert, StatusBar,
 } from 'react-native';
 import {Searchbar, Appbar, Subheading, TouchableRipple, Button, Dialog, Portal} from 'react-native-paper';
 
@@ -58,7 +58,11 @@ class MyMusic extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     this.getMysongLists();
+    // }
+
+    componentDidMount(): void {
         this.getMysongLists();
     }
 
@@ -98,7 +102,12 @@ class MyMusic extends Component {
             <TouchableRipple onPress={()=>{
                 this.wrapClick()
             }}>
+
                 <ScrollView style={styles.container}>
+                    <StatusBar
+                        backgroundColor="blue"
+                        barStyle="light-content"
+                    />
 
                     <Appbar.Header>
                         {/*<Appbar.BackAction*/}

@@ -62,7 +62,12 @@ class AddSong extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     this.getAllSinger();
+    //     this.getAll_Album();
+    // }
+    //
+    componentDidMount(): void {
         this.getAllSinger();
         this.getAll_Album();
     }
@@ -121,9 +126,25 @@ class AddSong extends Component {
 
 
                 <RNPickerSelect
-                    onValueChange={(value) => this.setState({
-                        SingerId:value
-                    })}
+                    onValueChange={(value) => {
+                        this.setState({
+                            SingerId:value
+                        });
+                        if (value&&value!=null){
+                            const DataBaseModule = NativeModules.DataBaseModule;
+                            DataBaseModule.getAlbumBySinger(value).then((result)=>{
+                                if (result==='fail') {
+                                    ToastAndroid.show("失败",ToastAndroid.SHORT);
+                                }else {
+                                    this.setState({
+                                        albumList:JSON.parse(result)
+                                    })
+                                }
+                                // alert(result)
+                            })
+                        }
+
+                    }}
                     value={this.state.SingerId}
                     placeholder={placeholder}
                     items={singerlist}

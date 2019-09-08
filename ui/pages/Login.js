@@ -14,7 +14,8 @@ import {
     View,
     ToastAndroid,
     BackHandler,
-    NativeModules
+    NativeModules,
+    StatusBar
 } from 'react-native';
 import { Button,TextInput,Checkbox,Surface } from 'react-native-paper';
 
@@ -85,6 +86,10 @@ class Login extends Component {
         return (
             <View style={styles.container}>
                 {/*<Text>{JSON.stringify(this.props)}</Text>*/}
+                <StatusBar
+                    backgroundColor="#518eff"
+                    barStyle="light-content"
+                />
                 <Surface style={{width: '80%',padding:20,borderRadius:20,elevation: 8}}>
                     <TextInput
                         label='用户名'

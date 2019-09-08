@@ -22,6 +22,9 @@ import com.gy_music.entity.Song;
 import com.gy_music.entity.SongList;
 import com.gy_music.entity.Song_list_song;
 import com.gy_music.entity.User;
+import com.gy_music.spider.AlbumSpider;
+import com.gy_music.spider.SingerSpider;
+import com.gy_music.spider.SongSpider;
 import com.gy_music.utils.Md5util;
 import com.gy_music.utils.RandomImg;
 import com.gy_music.utils.UUID_g;
@@ -29,6 +32,7 @@ import com.gy_music.utils.config;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -337,7 +341,7 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
                 return;
             }
             song = new Song(UUID_g.randomUUID(),album,songName,link,songCover,price);
-            singer_song = new Singer_song(singer,song);
+            singer_song = new Singer_song(UUID_g.randomUUID(),singer,song);
             helper.getSongStringDao().create(song);
             helper.getSingerSongStringDao().create(singer_song);
             mp.resolve("succ");
@@ -763,6 +767,53 @@ public class DataBaseModule extends ReactContextBaseJavaModule {
             mp.resolve("fail");
         }
         mp.resolve(JSON.toJSONString(songs));
+    }
+
+    @ReactMethod
+    public void getAlbumBySinger(String singerId,Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        Singer singer = null;
+        List<Album> albums = new ArrayList<>();
+        try {
+            singer = helper.getSingerStringDao().queryForId(singerId);
+            if (singer!=null)
+                albums = helper.getAlbumStringDao().queryBuilder().where().eq("ownerId",singer.getSingerId()).query();
+            else
+                mp.resolve("fail");
+        }catch (SQLException e){
+            e.printStackTrace();
+            mp.resolve("fail");
+        }
+        mp.resolve(JSON.toJSONString(albums));
+    }
+
+    @ReactMethod
+    public void Singerspider(Promise promise){
+        Promise mp = promise;
+        DatabaseHelper helper = DatabaseHelper.getInstance(mContext);
+        try {
+            List<Singer> singers = new SingerSpider().excuTask();
+            for (Singer singer:singers){
+                helper.getSingerStringDao().createOrUpdate(singer);
+            }
+            List<Album> albums = new AlbumSpider().excuTask(singers);
+            for (Album album:albums){
+                helper.getAlbumStringDao().createOrUpdate(album);
+            }
+            new SongSpider().excuTask(albums,mContext);
+
+//            for (Song song:songs){
+//                helper.getSongStringDao().createOrUpdate(song);
+//            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            mp.resolve("fail");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        mp.resolve("succ");
     }
 
 }

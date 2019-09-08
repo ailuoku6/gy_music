@@ -54,7 +54,17 @@ class AddSongList extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     if (this.props.mode&&this.props.mode==='edit'&&this.props.Songlist!=null){
+    //         this.setState({
+    //             songListTitle:this.props.Songlist.songListTitle,
+    //             songListIntro:this.props.Songlist.songListIntro,
+    //             songListCover:this.props.Songlist.songListCover,
+    //         })
+    //     }
+    // }
+
+    componentDidMount(): void {
         if (this.props.mode&&this.props.mode==='edit'&&this.props.Songlist!=null){
             this.setState({
                 songListTitle:this.props.Songlist.songListTitle,

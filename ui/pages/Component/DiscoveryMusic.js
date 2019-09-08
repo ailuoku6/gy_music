@@ -15,7 +15,7 @@ import {
     ToastAndroid,
     BackHandler,
     NativeModules,
-    ScrollView
+    ScrollView, StatusBar,
 } from 'react-native';
 import { Searchbar, Appbar, Subheading, TouchableRipple} from 'react-native-paper';
 
@@ -56,7 +56,12 @@ class DiscoveryMusic extends Component {
     //     this.props.dispatch(setSongList(["chgdhcgvdh","gvxgsvcghvsc"]))
     // }
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //     this.getrecommendSongList();
+    //     this.getRankings();
+    // }
+
+    componentDidMount(): void {
         this.getrecommendSongList();
         this.getRankings();
     }
@@ -104,6 +109,10 @@ class DiscoveryMusic extends Component {
             }}>
 
                 <View style={{width: '100%',height:'100%'}}>
+                    <StatusBar
+                        backgroundColor="blue"
+                        barStyle="light-content"
+                    />
                     <ScrollView style={styles.container}>
 
                         <Appbar.Header>

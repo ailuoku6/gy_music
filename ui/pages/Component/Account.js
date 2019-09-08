@@ -16,7 +16,7 @@ import {
     BackHandler,
     NativeModules,
     ScrollView,
-    Alert
+    Alert, StatusBar,
 } from 'react-native';
 import { Button,List,TouchableRipple,Dialog, Portal,TextInput } from 'react-native-paper';
 import { Avatar } from 'react-native-paper';

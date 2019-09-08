@@ -34,8 +34,27 @@ class RankingDetail extends React.Component {
     //     header:null,
     // };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //
+    //     let Ranking = this.props.navigation.state.params.Ranking;
+    //
+    //     let RankingId = Ranking.rankingId;
+    //
+    //     let items = this.props.navigation.state.params.songs;
+    //
+    //     // navigationOptions.title = Ranking.rankingName
+    //
+    //     this.setState({
+    //         RankingId:RankingId,
+    //         Ranking:Ranking
+    //     });
+    //     this.getSongs(items);
+    //     // this.getRankingById(RankingId)
+    //     this.getMysongLists();
+    //
+    // }
 
+    componentDidMount(): void {
         let Ranking = this.props.navigation.state.params.Ranking;
 
         let RankingId = Ranking.rankingId;
@@ -51,7 +70,6 @@ class RankingDetail extends React.Component {
         this.getSongs(items);
         // this.getRankingById(RankingId)
         this.getMysongLists();
-
     }
 
     getSongs(items){
@@ -146,7 +164,7 @@ class RankingDetail extends React.Component {
                 <FlatList
                     data={this.state.songs}
                     extraData={this.state}
-                    keyExtractor={(item,index)=>item}
+                    keyExtractor={(item,index)=>JSON.stringify(item)}
                     renderItem={({item,index})=>(
                         <SongItem
                             ItemData={item}

@@ -34,8 +34,22 @@ class SongListDetail extends React.Component {
     //     header:null,
     // };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //
+    //     let SonglistId = this.props.navigation.state.params.SonglistId;
+    //
+    //     this.setState({
+    //         SonglistId:SonglistId
+    //     });
+    //     this.getSongs(SonglistId);
+    //
+    //     this.getSongList(SonglistId);
+    //
+    //     this.getMysongLists();
+    //
+    // }
 
+    componentDidMount(): void {
         let SonglistId = this.props.navigation.state.params.SonglistId;
 
         this.setState({
@@ -46,7 +60,6 @@ class SongListDetail extends React.Component {
         this.getSongList(SonglistId);
 
         this.getMysongLists();
-
     }
 
     getSongs(songlistId){
@@ -125,7 +138,7 @@ class SongListDetail extends React.Component {
                 <FlatList
                     data={this.state.songs}
                     extraData={this.state}
-                    keyExtractor={(item,index)=>item}
+                    keyExtractor={(item,index)=>JSON.stringify(item)}
                     renderItem={({item,index})=>(
                         <SongItem
                             ItemData={item}

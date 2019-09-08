@@ -34,8 +34,21 @@ class AlbumPage extends React.Component {
     //     header:null,
     // };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //
+    //     let Album = this.props.navigation.state.params.Album;
+    //
+    //     this.setState({
+    //         Album:Album
+    //     });
+    //
+    //     this.getSongsByAlbumId(Album.albumId);
+    //
+    //     this.getMysongLists();
+    //
+    // }
 
+    componentDidMount(): void {
         let Album = this.props.navigation.state.params.Album;
 
         this.setState({
@@ -45,7 +58,6 @@ class AlbumPage extends React.Component {
         this.getSongsByAlbumId(Album.albumId);
 
         this.getMysongLists();
-
     }
 
     getMysongLists(){
@@ -114,7 +126,7 @@ class AlbumPage extends React.Component {
                 <FlatList
                     data={this.state.songs}
                     extraData={this.state}
-                    keyExtractor={(item,index)=>item}
+                    keyExtractor={(item,index)=>JSON.stringify(index)}
                     renderItem={({item,index})=>(
                         <SongItem
                             ItemData={item}

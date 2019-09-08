@@ -34,8 +34,21 @@ class SingerPage extends React.Component {
     //     header:null,
     // };
 
-    componentWillMount(): void {
+    // componentWillMount(): void {
+    //
+    //     let SingerId = this.props.navigation.state.params.SingerId;
+    //
+    //     this.setState({
+    //         SingerId:SingerId
+    //     });
+    //
+    //     this.getSingerById(SingerId);
+    //     this.getSongsBySingerId(SingerId)
+    //     this.getMysongLists();
+    //
+    // }
 
+    componentDidMount(): void {
         let SingerId = this.props.navigation.state.params.SingerId;
 
         this.setState({
@@ -45,7 +58,6 @@ class SingerPage extends React.Component {
         this.getSingerById(SingerId);
         this.getSongsBySingerId(SingerId)
         this.getMysongLists();
-
     }
 
     getSingerById(singerid){
@@ -124,7 +136,7 @@ class SingerPage extends React.Component {
                 <FlatList
                     data={this.state.songs}
                     extraData={this.state}
-                    keyExtractor={(item,index)=>item}
+                    keyExtractor={(item,index)=>JSON.stringify(item)}
                     renderItem={({item,index})=>(
                         <SongItem
                             ItemData={item}
