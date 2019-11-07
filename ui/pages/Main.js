@@ -37,31 +37,6 @@ class Main extends React.Component {
         account: ()=><Account navigation={this.props.navigation}/>,
     });
 
-    // _renderScene = ({route}) => BottomNavigation.SceneMap({
-    //     discovery_music: ()=><DiscoveryMusic unikey={Math.random().toString()} navigation={this.props.navigation}/>,
-    //     my_music: ()=><MyMusic navigation={this.props.navigation}/>,
-    //     account: ()=><Account navigation={this.props.navigation}/>,
-    // });
-
-    // _renderScene = ({ route }) => {
-    //     // if (this.state.routes[this.state.index].key !== route.key) {
-    //     //     return null;
-    //     // }else {
-    //     //     // switch () {
-    //     //     //
-    //     //     // }
-    //     //
-    //     // }
-    //     switch (this.state.index) {
-    //         case 0:
-    //             return <DiscoveryMusic navigation={this.props.navigation}/>;
-    //         case 1:
-    //             return <MyMusic navigation={this.props.navigation}/>;
-    //         case 2:
-    //             return <Account navigation={this.props.navigation}/>;
-    //     }
-    // };
-
     render() {
         // alert(JSON.stringify(this.props))
         return (
